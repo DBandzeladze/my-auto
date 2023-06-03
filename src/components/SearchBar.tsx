@@ -1,6 +1,8 @@
 import React from "react";
-
-const SearchBar = ({})=>{
+type types = {
+    
+}
+const SearchBar = (props: types)=>{
     return 0
 }
 

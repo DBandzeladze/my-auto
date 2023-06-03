@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import CarInfo from './CarInfo';
+import CarInfo from './components/CarInfo';
 
 const url = "https://api2.myauto.ge/ka/products/";
 
