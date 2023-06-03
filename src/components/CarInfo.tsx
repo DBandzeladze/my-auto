@@ -1,6 +1,7 @@
 import React from "react";
 import { CarInfoDataType } from "../types/types";
 const CarInfo = (props: CarInfoDataType)=>{
+    
     const str = `https://static.my.ge/myauto/photos/${props.photo}/thumbs/${props.car_id}_1.jpg?v=${props.photo_ver}`
     return (
         <div className="container">
