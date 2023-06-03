@@ -1,9 +1,12 @@
 import React from "react";
-type types = {
-    
-}
-const SearchBar = (props: types)=>{
-    return 0
+import { ManufacturerListType } from "../types/types";
+
+const ManufacturerLst = (Props: ManufacturerListType)=>{
+    return (
+        <option>
+            {Props.man_name}
+        </option>
+    )
 }
 
-export default SearchBar;
+export default ManufacturerLst;
