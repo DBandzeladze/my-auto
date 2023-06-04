@@ -40,14 +40,14 @@ function App() {
     <div className="App">
       <select>
         <optgroup label='პოპულარული'>
-          {manufacturer.filter((info) => info.is_spec !== 0).map((info)=>{
+          {manufacturer.filter((info) => info.is_spec !== "0").map((info)=>{
             return (
               <ManufacturerLst key ={info.man_id} {...info}/>
             )
           })}
         </optgroup>
         <optgroup label='სხვა'>
-          {manufacturer.filter((info)=> info.is_spec !== 1).map((info)=>{
+          {manufacturer.filter((info)=> info.is_spec !== "1").map((info)=>{
             return (
               <ManufacturerLst key ={info.man_id} {...info}/>
             )
