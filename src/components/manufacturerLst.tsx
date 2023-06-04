@@ -17,8 +17,7 @@ const ManufacturerLst= (Props: ManufacturerListType)=>{
       };
     return (
         <div>
-            <input type="checkbox" onChange={handleChange}></input>
-        <Dropdown.Item href="#">{Props.man_name}</Dropdown.Item>
+            <label htmlFor={Props.man_id}><input type="checkbox" onChange={handleChange} id= {Props.man_id}></input>{Props.man_name}</label>
       </div>
     )
 }

@@ -137,4 +137,12 @@ export type CarInfoDataType = {
 export type MyObject = {
   [key: string]: number;
 };
+export type CategoryType = {
+  category_id: number,
+  category_type: number,
+  has_icon: number,
+  title: string,
+  seo_title: string,
+  vehicle_types: number[]
+}
   
