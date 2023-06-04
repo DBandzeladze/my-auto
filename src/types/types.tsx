@@ -134,4 +134,7 @@ export type CarInfoDataType = {
   show_in_salons: number,
   shown_in_slider: number
 }
+export type MyObject = {
+  [key: string]: number;
+};
   

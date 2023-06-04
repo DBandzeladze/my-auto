@@ -3,6 +3,8 @@ import CarInfo from './components/CarInfo';
 import ManufacturerLst from './components/manufacturerLst';
 import { CarInfoDataType } from './types/types';
 import { ManufacturerListType } from './types/types';
+import { DropdownButton, Dropdown } from 'react-bootstrap';
+
 const url = "https://api2.myauto.ge/ka/products/";
 const url2 = "https://static.my.ge/myauto/js/mans.json"
 
@@ -36,24 +38,24 @@ function App() {
     return <main>Loading</main>;
   }
 
+
   return (
     <div className="App">
-      <select>
-        <optgroup label='პოპულარული'>
-          {manufacturer.filter((info) => info.is_spec !== "0").map((info)=>{
+      <div>მწარმოებელი</div>
+     <DropdownButton id="dropdownMenuButton" title="მწარმოებელი">
+      <div>პოპულარული</div>
+      {manufacturer.filter((info) => info.is_spec !== "0").map((info)=>{
             return (
               <ManufacturerLst key ={info.man_id} {...info}/>
             )
           })}
-        </optgroup>
-        <optgroup label='სხვა'>
-          {manufacturer.filter((info)=> info.is_spec !== "1").map((info)=>{
+      <div>სხვა</div>
+      {manufacturer.filter((info)=> info.is_spec !== "1").map((info)=>{
             return (
               <ManufacturerLst key ={info.man_id} {...info}/>
             )
           })}
-        </optgroup>
-      </select>
+    </DropdownButton>
       {data.map((info)=>{
                     return(
                         <CarInfo key={info.car_id} {...info}/>
