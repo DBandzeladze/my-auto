@@ -134,7 +134,7 @@ export type CarInfoDataType = {
   show_in_salons: number,
   shown_in_slider: number
 }
-export type MyObject = {
+export type GlobalType = {
   [key: string]: number;
 };
 export type CategoryType = {

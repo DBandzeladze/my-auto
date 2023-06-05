@@ -1,22 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import CarInfo from './components/CarInfo';
 import ManufacturerLst from './components/manufacturerLst';
 import { CarInfoDataType } from './types/types';
 import { ManufacturerListType } from './types/types';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
-import { CategoryType } from './types/types';
+import { CategoryType, GlobalType} from './types/types';
 import Category from './components/category';
+import { Context} from "./global"; 
 
 const url = "https://api2.myauto.ge/ka/products/";
 const url2 = "https://static.my.ge/myauto/js/mans.json";
 const url3 = "https://api2.myauto.ge/ka/cats/get";
 
 function App() {
+  const [manFilter, setManFilter] = useContext(Context);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<CarInfoDataType[]>([]);
   const [manufacturer, SetManufacturer] = useState<ManufacturerListType[]>([]);
   const [categoty, SetCategory] = useState<CategoryType[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
+
+  const sortManfacurer = (manlst: ManufacturerListType[]) => {
+    const sortedList = manlst.sort((a, b) => a.man_name.localeCompare(b.man_name));
+    return sortedList;
+  }
+  const filter_manufacturer = (OldData: CarInfoDataType[]) => {
+    let NewData: CarInfoDataType[] = [...OldData];
+    for (const key in manFilter) {
+      if (manFilter[key] === 1){
+        let data1: CarInfoDataType[];
+        data1 = NewData.filter((info) => info.model_id.toString() !== key);
+        console.log(data1)
+        NewData = data1;
+      }
+    }
+    return NewData;
+  };
   
 
   const fetchData = async () => {
@@ -30,7 +49,7 @@ function App() {
       const responseData3 = await response3.json();
       setLoading(false);
       setData(responseData.data.items);
-      SetManufacturer(responseData2);
+      SetManufacturer(sortManfacurer(responseData2));
       SetCategory(responseData3.data);
     } catch (error) {
       setLoading(false);
@@ -81,13 +100,13 @@ function App() {
       <div>მწარმოებელი</div>
      <DropdownButton id="dropdownMenuButton" title="მწარმოებელი">
       <div>პოპულარული</div>
-      {manufacturer.filter((info) => info.is_spec !== "0").map((info)=>{
+      {manufacturer.filter((info) => info.is_spec !== "1" && info.is_car === "1").map((info)=>{
             return (
               <ManufacturerLst key ={info.man_id} {...info}/>
             )
           })}
       <div>სხვა</div>
-      {manufacturer.filter((info)=> info.is_spec !== "1").map((info)=>{
+      {manufacturer.filter((info)=> info.is_spec !== "0" && info.is_car === "1").map((info)=>{
             return (
               <ManufacturerLst key ={info.man_id} {...info}/>
             )
@@ -112,7 +131,8 @@ function App() {
           </Dropdown.Item>
         ))}
       </DropdownButton>
-      {filteredCars.map((info)=>{
+      <button type='button' onClick={()=>setData(filter_manufacturer(filteredCars))}>click</button>
+      {data.map((info)=>{
                     return(
                         <CarInfo key={info.car_id} {...info}/>
                     )
