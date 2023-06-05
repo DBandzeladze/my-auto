@@ -7,7 +7,7 @@ import { Context} from "../global";
 const ManufacturerLst= (Props: ManufacturerListType)=>{
   const [state, setState] = useContext(Context);
   let newState = state;
-  newState[Props.man_id] = 0;
+  // newState[Props.man_id] = 0;
   setState(newState)
     let str1: string = Props.man_id;
     // MY_GLOBAL_VAR.str = 0;

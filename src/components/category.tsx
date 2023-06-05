@@ -1,16 +1,29 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useContext } from "react";
 import { CategoryType } from "../types/types";
 import { DropdownButton, Dropdown } from 'react-bootstrap';
+import { Context2} from "../global";
 
 
 const Category= (Props: CategoryType)=>{
     let str: string = Props.seo_title;
+    const [state, setState] = useContext(Context2);
+    let newState = state
+    // newState[Props.category_id] = 0;
+    setState(newState);
      // MY_GLOBAL_VAR.str = 0;
      const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
+            let newState1 = state;
+            newState1[Props.category_id] = 1;
+            setState(newState1)
+            console.log(state)
         //   MY_GLOBAL_VAR.str = 1;
         //   console.log(MY_GLOBAL_VAR.str)
         } else {
+            let newState1 = state;
+            newState1[Props.category_id] = 0;
+            setState(newState1)
+            console.log(state)
         //   MY_GLOBAL_VAR.str = 0;
         //   console.log(MY_GLOBAL_VAR.str)
         }
@@ -43,7 +56,7 @@ const Category= (Props: CategoryType)=>{
 
     return (
         <div>
-            <label htmlFor={Props.category_id.toString()}><input type="checkbox" onChange={handleChange} id={Props.category_id.toString()}></input>{str}</label>
+            <label htmlFor={Props.seo_title}><input type="checkbox" onChange={handleChange} id={Props.seo_title}></input>{str}</label>
       </div>
     )
 }

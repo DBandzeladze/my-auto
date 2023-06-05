@@ -145,4 +145,9 @@ export type CategoryType = {
   seo_title: string,
   vehicle_types: number[]
 }
-  
+export type GlobalCategoryType = {
+  [key: number]: number;
+}
+export type GloablRentType = {
+  [key: string]: number;
+}
