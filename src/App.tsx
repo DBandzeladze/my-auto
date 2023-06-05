@@ -124,8 +124,6 @@ function App() {
     NewData = FilterMan(NewData);
     NewData = FilterCat(NewData);
     NewData = FilterRent(NewData);
-    NewData = NewData.filter(filterCarsByPeriod);
-    NewData = sortCars(NewData);
     return NewData;
 
   }
@@ -154,7 +152,7 @@ function App() {
   useEffect(() => {
     fetchData();
   }, []);
-
+  
   const handlePeriodFilter = (period: string) => {
     setSelectedPeriod(period);
   };
@@ -185,12 +183,14 @@ function App() {
     switch (selectedSortOption) {
       case '1':
         // Sort by date in ascending order (newest to oldest)
+        console.log("1")
         return cars.sort((a, b) => {
           const dateA = new Date(a.order_date);
           const dateB = new Date(b.order_date);
           return dateA.getTime() - dateB.getTime();
         });
       case '2':
+        console.log("2")
         // Sort by date in descending order (oldest to newest)
         return cars.sort((a, b) => {
           const dateA = new Date(a.order_date);
@@ -198,6 +198,7 @@ function App() {
           return dateB.getTime() - dateA.getTime();
         });
       case '3':
+        console.log("3")
         // Sort by price in ascending order (cheap to expensive)
         return cars.sort((a, b) => a.price - b.price);
       case '4':
@@ -210,6 +211,7 @@ function App() {
         // Sort by car run in descending order
         return cars.sort((a, b) => b.car_run - a.car_run);
       default:
+        console.log("default")
         return cars;
     }
   };
@@ -254,7 +256,7 @@ function App() {
         {periods.map((period) => (
           <Dropdown.Item
             key={period}
-            onClick={() => handlePeriodFilter(period)}
+            onClick={() => {handlePeriodFilter(period);}}
           >
             {`${period} hours ago`}
           </Dropdown.Item>
@@ -262,26 +264,26 @@ function App() {
       </DropdownButton>
       <button type='button' onClick={()=>setFilteredData(FilterAll(data))}>filter</button>
       <DropdownButton id="sortDropdown" title="დახარისხება">
-        <Dropdown.Item onClick={() => handleSortOption('1')}>
+        <Dropdown.Item onClick={() => {handleSortOption('1');}}>
           Sort by date (ascending)
         </Dropdown.Item>
-        <Dropdown.Item onClick={() => handleSortOption('2')}>
+        <Dropdown.Item onClick={() => {handleSortOption('2');}}>
           Sort by date (descending)
         </Dropdown.Item>
-        <Dropdown.Item onClick={() => handleSortOption('3')}>
+        <Dropdown.Item onClick={() => {handleSortOption('3');}}>
           Sort by price (ascending)
         </Dropdown.Item>
-        <Dropdown.Item onClick={() => handleSortOption('4')}>
+        <Dropdown.Item onClick={() => {handleSortOption('4');}}>
           Sort by price (descending)
         </Dropdown.Item>
-        <Dropdown.Item onClick={() => handleSortOption('5')}>
+        <Dropdown.Item onClick={() => {handleSortOption('5');}}>
           Sort by car run (ascending)
         </Dropdown.Item>
-        <Dropdown.Item onClick={() => handleSortOption('6')}>
+        <Dropdown.Item onClick={() => {handleSortOption('6');}}>
           Sort by car run (descending)
         </Dropdown.Item>
       </DropdownButton>
-      {filteredData.map((info)=>{
+      {sortCars(filteredData.filter(filterCarsByPeriod)).map((info)=>{
                     return(
                         <CarInfo key={info.car_id} {...info}/>
                     )
