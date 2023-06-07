@@ -22,10 +22,21 @@ function App() {
   const [categoty, SetCategory] = useState<CategoryType[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
   const [selectedSortOption, setSelectedSortOption] = useState<string | null>(null);
+  const [fromValue, setFromValue] = useState<number>(Number.MIN_VALUE);
+  const [toValue, setToValue] = useState<number>(Number.MAX_VALUE);
 
   
   const [filteredData, setFilteredData] = useState<CarInfoDataType[]>([]);
 
+  const handleFromValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseInt(event.target.value);
+    console.log(newValue)
+    setFromValue(newValue);
+  };
+  const handleToValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseInt(event.target.value);
+    setToValue(newValue);
+  };
   const sortManfacurer = (manlst: ManufacturerListType[]) => {
     const sortedList = manlst.sort((a, b) => a.man_name.localeCompare(b.man_name));
     return sortedList;
@@ -56,6 +67,21 @@ function App() {
         console.log(rentFilter)
       }
     };
+  const FilterPrice = (OldData: CarInfoDataType[]) =>{
+    let NewData: CarInfoDataType[]= [];
+    OldData.forEach(element => {
+      if (isNaN(fromValue) && isNaN(toValue)){
+        NewData.push(element)
+      } else if ((isNaN(fromValue) === false) && isNaN(toValue) && (element.price >= fromValue)){
+        NewData.push(element)
+      } else if (isNaN(fromValue) && (isNaN(toValue) === false) && (element.price <= toValue)){
+        NewData.push(element)
+      } else if ((element.price >= fromValue) && (element.price <= toValue)){
+        NewData.push(element)
+      }
+    })
+   return NewData
+  }
   const FilterMan = (OldData: CarInfoDataType[]) => {
     let NewData: CarInfoDataType[]= [];
     let change: boolean = false
@@ -124,6 +150,7 @@ function App() {
     NewData = FilterMan(NewData);
     NewData = FilterCat(NewData);
     NewData = FilterRent(NewData);
+    NewData = FilterPrice(NewData);
     return NewData;
 
   }
@@ -183,14 +210,12 @@ function App() {
     switch (selectedSortOption) {
       case '1':
         // Sort by date in ascending order (newest to oldest)
-        console.log("1")
         return cars.sort((a, b) => {
           const dateA = new Date(a.order_date);
           const dateB = new Date(b.order_date);
           return dateA.getTime() - dateB.getTime();
         });
       case '2':
-        console.log("2")
         // Sort by date in descending order (oldest to newest)
         return cars.sort((a, b) => {
           const dateA = new Date(a.order_date);
@@ -211,7 +236,6 @@ function App() {
         // Sort by car run in descending order
         return cars.sort((a, b) => b.car_run - a.car_run);
       default:
-        console.log("default")
         return cars;
     }
   };
@@ -221,7 +245,7 @@ function App() {
 
 
   return (
-    <div className="App">
+    <div className="container">
       <div>გარიგების ტიპი</div>
       <DropdownButton id="dropdownMenuButton" title="გარიგების ტიპი">
         <label htmlFor='1'><input type='checkbox' id='1' onChange={handleChangeSale}></input>იყიდება</label>
@@ -251,6 +275,12 @@ function App() {
         )
       })}
     </DropdownButton>
+    <br></br>
+    <div className='input-group'>
+      <input type='number' id='number1' className="form-control" onChange={handleFromValue}></input>
+      <div className="input-group-text">-</div>
+      <input type='number' id='number2' className="form-control" onChange={handleToValue}></input>
+    </div>
     <br></br>
     <DropdownButton id="periodDropdown" title="პერიოდი">
         {periods.map((period) => (
