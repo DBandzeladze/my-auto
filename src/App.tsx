@@ -6,13 +6,17 @@ import { ManufacturerListType } from './types/types';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { CategoryType, GlobalType, GloablRentType, GlobalCategoryType} from './types/types';
 import Category from './components/category';
-import { Context,Context2, Context3} from "./global"; 
+import { Context,Context2, Context3} from "./global";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { url } from 'inspector';
 
-const url = "https://api2.myauto.ge/ka/products/";
+// const url = "https://api2.myauto.ge/ka/products/";
 const url2 = "https://static.my.ge/myauto/js/mans.json";
 const url3 = "https://api2.myauto.ge/ka/cats/get";
 
 function App() {
+  const [firstUrl, setFirstUrl] = useState("https://api2.myauto.ge/ka/products/");
+  const [dataUrl, setDataUrl] = useState("https://api2.myauto.ge/ka/products/");
   const [rentFilter, setRentFilter] = useContext(Context3);
   const [manFilter, setManFilter] = useContext(Context);
   const [categoryFilter, setCategoryFilter] = useContext(Context2);
@@ -22,15 +26,54 @@ function App() {
   const [categoty, SetCategory] = useState<CategoryType[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
   const [selectedSortOption, setSelectedSortOption] = useState<string | null>(null);
-  const [fromValue, setFromValue] = useState<number>(Number.MIN_VALUE);
-  const [toValue, setToValue] = useState<number>(Number.MAX_VALUE);
+  const [fromValue, setFromValue] = useState<number>(NaN);
+  const [toValue, setToValue] = useState<number>(NaN);
+  const [checkbox1Checked, setCheckbox1Checked] = useState(false);
+  const [checkbox2Checked, setCheckbox2Checked] = useState(false);
+  const [page, setPage] = useState(1);
+  const [vehicle, setVehicle] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   
   const [filteredData, setFilteredData] = useState<CarInfoDataType[]>([]);
 
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => prevPage - 1);
+  };
+  const renderPageButtons = () => {
+    const pageButtons = [];
+    const numButtons = 7;
+
+    // Calculate the range of visible page buttons based on the current page
+    let startPage = currentPage - Math.floor(numButtons / 2);
+    let endPage = currentPage + Math.floor(numButtons / 2);
+
+    if (startPage < 1) {
+      // Adjust if the start page is less than 1
+      endPage += Math.abs(startPage) + 1;
+      startPage = 1;
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageButtons.push(
+        <button
+          key={i}
+          onClick={() => setCurrentPage(i)}
+          disabled={i === currentPage}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return pageButtons;
+  };
+
   const handleFromValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(event.target.value);
-    console.log(newValue)
     setFromValue(newValue);
   };
   const handleToValue = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +88,9 @@ function App() {
       if (event.target.checked) {
         let newState1 = rentFilter;
         newState1["sale"] = 1;
+        newState1["rent"] = 0;
+        setCheckbox1Checked(true);
+        setCheckbox2Checked(false);
         setRentFilter(newState1)
         console.log(rentFilter)
       } else {
@@ -58,6 +104,9 @@ function App() {
       if (event.target.checked) {
         let newState1 = rentFilter;
         newState1["rent"] = 1;
+        newState1["sale"] = 0;
+        setCheckbox1Checked(false);
+        setCheckbox2Checked(true);
         setRentFilter(newState1)
         console.log(rentFilter)
       } else {
@@ -67,109 +116,68 @@ function App() {
         console.log(rentFilter)
       }
     };
-  const FilterPrice = (OldData: CarInfoDataType[]) =>{
-    let NewData: CarInfoDataType[]= [];
-    OldData.forEach(element => {
-      if (isNaN(fromValue) && isNaN(toValue)){
-        NewData.push(element)
-      } else if ((isNaN(fromValue) === false) && isNaN(toValue) && (element.price >= fromValue)){
-        NewData.push(element)
-      } else if (isNaN(fromValue) && (isNaN(toValue) === false) && (element.price <= toValue)){
-        NewData.push(element)
-      } else if ((element.price >= fromValue) && (element.price <= toValue)){
-        NewData.push(element)
-      }
-    })
-   return NewData
-  }
-  const FilterMan = (OldData: CarInfoDataType[]) => {
-    let NewData: CarInfoDataType[]= [];
-    let change: boolean = false
-    for (const key in manFilter) {
-      if (manFilter[key] === 1){
-        change = true;
-        OldData.forEach(element=>{
-          if (element.man_id.toString() == key){
-            NewData.push(element);
-          }
-        }
-        )
-      }
+  const FilteringUrl = () =>{
+    let from :string = "" 
+    if (isNaN(fromValue)){
+      from = ""
     }
-    if (change) {
-      return NewData;
+    else{
+      from = `${fromValue}`
     }
-    return OldData;
-  };
-  const FilterCat = (OldData: CarInfoDataType[]) => {
-    let NewData: CarInfoDataType[]= [];
-    let change: boolean = false
-    for (const key in categoryFilter) {
-      if (categoryFilter[key] === 1){
-        change = true;
-        OldData.forEach(element=>{
-          if (element.category_id.toString() === key){
-            NewData.push(element);
-          }
-        }
-        )
-      }
+    let to :string = "" 
+    if (isNaN(toValue)){
+      to = ""
     }
-    if (change) {
-      return NewData;
+    else{
+      to = `${toValue}`
     }
-    return OldData;
-  };
-
-  const FilterRent = (OldData: CarInfoDataType[]) => {
-    let NewData: CarInfoDataType[]= [];
-    let change: boolean = false
-    for (const key in rentFilter) {
-      if (rentFilter[key] === 1){
-        change = true;
-        OldData.forEach(element=>{
-          console.log(key)
-          if (element.for_rent === true && key=== "rent"){
-            NewData.push(element);
-          }
-          if (element.for_rent === false && key === "sale"){
-            NewData.push(element)
-          }
-        }
-        )
-      }
+    let rent : string = "";
+    if (rentFilter["rent"] === 1){
+      rent = "1";
+    }else if (rentFilter["sale"] === 1){
+      rent = "0";
     }
-    if (change) {
-      return NewData;
+    let sortopt :string = ""
+    if (selectedSortOption != null){
+      sortopt = selectedSortOption;
     }
-    return OldData;
-  };
-
-  const FilterAll = (OldData: CarInfoDataType[]) => {
-    let NewData: CarInfoDataType[]= [...OldData];
-    NewData = FilterMan(NewData);
-    NewData = FilterCat(NewData);
-    NewData = FilterRent(NewData);
-    NewData = FilterPrice(NewData);
-    return NewData;
-
+    let periodopt: string = "";
+    if (selectedPeriod != null){
+      periodopt = selectedPeriod;
+    }
+    let newUrl: string = `${firstUrl}?Page=${currentPage}&PriceFrom=${from}&PriceTo=${to}&ForRent=${rent}&SortOrder=${sortopt}&Period=${periodopt}`;
+    console.log(newUrl)
+    setDataUrl(newUrl)
   }
   
-
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response1 = await fetch(url);
+      // const response1 = await fetch(url);
       const response2 = await fetch(url2);
       const response3 = await fetch(url3);
-      const responseData = await response1.json();
+      // const responseData = await response1.json();
       const responseData2 = await response2.json();
       const responseData3 = await response3.json();
       setLoading(false);
-      setData(responseData.data.items);
-      setFilteredData(responseData.data.items)
+      // setData(responseData.data.items);
+      // setFilteredData(responseData.data.items)
       SetManufacturer(sortManfacurer(responseData2));
       SetCategory(responseData3.data);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
+  const fetchData1 = async () => {
+    setLoading(true);
+    try {
+      const response1 = await fetch(dataUrl);
+      const responseData = await response1.json();
+      setLoading(false);
+      setData(responseData.data.items);
+      setFilteredData(responseData.data.items)
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -179,6 +187,15 @@ function App() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(()=>{
+    fetchData1();
+  }, [dataUrl])
+
+  useEffect(()=>{
+    FilteringUrl();
+  }, [currentPage, selectedSortOption, selectedPeriod])
+
   
   const handlePeriodFilter = (period: string) => {
     setSelectedPeriod(period);
@@ -187,58 +204,6 @@ function App() {
     setSelectedSortOption(option);
   };
 
-
-  const filterCarsByPeriod = (car: CarInfoDataType) => {
-    if (!selectedPeriod) {
-      return true;
-    }
-
-    const periodInHours = parseInt(selectedPeriod);
-    const orderDate = new Date(car.order_date);
-    const currentDate = new Date();
-
-    const timeDifference = currentDate.getTime() - orderDate.getTime();
-    const hoursDifference = timeDifference / (1000 * 3600);
-
-    return hoursDifference <= periodInHours;
-  };
-  const periods = ['1', '3', '6', '12', '24'];
-
-  // const filteredCars = data.filter(filterCarsByPeriod);
-
-  const sortCars = (cars: CarInfoDataType[]): CarInfoDataType[] => {
-    switch (selectedSortOption) {
-      case '1':
-        // Sort by date in ascending order (newest to oldest)
-        return cars.sort((a, b) => {
-          const dateA = new Date(a.order_date);
-          const dateB = new Date(b.order_date);
-          return dateA.getTime() - dateB.getTime();
-        });
-      case '2':
-        // Sort by date in descending order (oldest to newest)
-        return cars.sort((a, b) => {
-          const dateA = new Date(a.order_date);
-          const dateB = new Date(b.order_date);
-          return dateB.getTime() - dateA.getTime();
-        });
-      case '3':
-        console.log("3")
-        // Sort by price in ascending order (cheap to expensive)
-        return cars.sort((a, b) => a.price - b.price);
-      case '4':
-        // Sort by price in descending order (expensive to cheap)
-        return cars.sort((a, b) => b.price - a.price);
-      case '5':
-        // Sort by car run in ascending order
-        return cars.sort((a, b) => a.car_run - b.car_run);
-      case '6':
-        // Sort by car run in descending order
-        return cars.sort((a, b) => b.car_run - a.car_run);
-      default:
-        return cars;
-    }
-  };
   if (loading) {
     return <main>Loading</main>;
   }
@@ -246,11 +211,17 @@ function App() {
 
   return (
     <div className="container">
+      <div>
+        miutitet transportis tipi
+      </div>
+      <button onClick={()=>setVehicle(0)}>0</button>
+      <button onClick={()=>setVehicle(1)}>1</button>
+      <button onClick={()=>setVehicle(2)}>2</button>
       <div>გარიგების ტიპი</div>
       <DropdownButton id="dropdownMenuButton" title="გარიგების ტიპი">
-        <label htmlFor='1'><input type='checkbox' id='1' onChange={handleChangeSale}></input>იყიდება</label>
+        <label htmlFor='1'><input type='checkbox' id='1' onChange={handleChangeSale} checked={checkbox1Checked}></input>იყიდება</label>
         <br></br>
-        <label htmlFor='2'><input type='checkbox' id='2' onChange={handleChangeRent}></input>ქირავდება</label>
+        <label htmlFor='2'><input type='checkbox' id='2' onChange={handleChangeRent} checked={checkbox2Checked}></input>ქირავდება</label>
       </DropdownButton>
       <div>მწარმოებელი</div>
      <DropdownButton id="dropdownMenuButton" title="მწარმოებელი">
@@ -269,7 +240,7 @@ function App() {
     </DropdownButton>
     <div>კატეგორია</div>
     <DropdownButton id="dropdownMenuButton" title="კატეგორია">
-      {categoty.filter((info)=>info.vehicle_types[0]===0).map((info)=>{
+      {categoty.filter((info)=>info.vehicle_types[0]===vehicle).map((info)=>{
         return (
           <Category key = {info.category_id} {...info}/>
         )
@@ -277,22 +248,32 @@ function App() {
     </DropdownButton>
     <br></br>
     <div className='input-group'>
-      <input type='number' id='number1' className="form-control" onChange={handleFromValue}></input>
+      <input type='number' id='number1' className="form-control" value={fromValue} onChange={handleFromValue}></input>
       <div className="input-group-text">-</div>
-      <input type='number' id='number2' className="form-control" onChange={handleToValue}></input>
+      <input type='number' id='number2' className="form-control" value={toValue} onChange={handleToValue}></input>
     </div>
     <br></br>
     <DropdownButton id="periodDropdown" title="პერიოდი">
-        {periods.map((period) => (
-          <Dropdown.Item
-            key={period}
-            onClick={() => {handlePeriodFilter(period);}}
-          >
-            {`${period} hours ago`}
-          </Dropdown.Item>
-        ))}
+      <Dropdown.Item onClick={()=>handlePeriodFilter("1h")}>1h
+      </Dropdown.Item>
+      <Dropdown.Item onClick={()=>handlePeriodFilter("2h")}>2h
+      </Dropdown.Item>
+      <Dropdown.Item onClick={()=>handlePeriodFilter("3h")}>3h
+      </Dropdown.Item>
+      <Dropdown.Item onClick={()=>handlePeriodFilter("1d")}>1d
+      </Dropdown.Item>
+      <Dropdown.Item onClick={()=>handlePeriodFilter("2d")}>2d
+      </Dropdown.Item>
+      <Dropdown.Item onClick={()=>handlePeriodFilter("3d")}>3d
+      </Dropdown.Item>
+      <Dropdown.Item onClick={()=>handlePeriodFilter("1w")}>1w
+      </Dropdown.Item>
+      <Dropdown.Item onClick={()=>handlePeriodFilter("2w")}>2w
+      </Dropdown.Item>
+      <Dropdown.Item onClick={()=>handlePeriodFilter("3w")}>3w
+      </Dropdown.Item>
       </DropdownButton>
-      <button type='button' onClick={()=>setFilteredData(FilterAll(data))}>filter</button>
+      <button type='button' onClick={()=>FilteringUrl()}>filter</button>
       <DropdownButton id="sortDropdown" title="დახარისხება">
         <Dropdown.Item onClick={() => {handleSortOption('1');}}>
           Sort by date (ascending)
@@ -313,11 +294,21 @@ function App() {
           Sort by car run (descending)
         </Dropdown.Item>
       </DropdownButton>
-      {sortCars(filteredData.filter(filterCarsByPeriod)).map((info)=>{
+      {data.map((info)=>{
                     return(
                         <CarInfo key={info.car_id} {...info}/>
                     )
                 })}
+      <div>
+      <button disabled={currentPage === 1} onClick={handlePrevPage}>
+        Previous
+      </button>
+
+      {renderPageButtons()}
+
+      <button onClick={handleNextPage}>Next</button>
+      </div>
+
     </div>
   );
 }

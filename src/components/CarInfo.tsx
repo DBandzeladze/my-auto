@@ -88,11 +88,11 @@ const CarInfo = (props: CarInfoDataType)=>{
         timeDifferenceText = `${timeDifferenceMinutes} წუთის წინ`;
      }
      let carPrice : string = "";
-     if (props.price === 0) {
+     if (props.price_value === 0) {
         carPrice = "ფასი შეთანხმებით"
      }
      else {
-        carPrice = `${props.price}`
+        carPrice = `${props.price_value}`
      }
      let ForRent : string = "";
      if (props.for_rent) {

@@ -8,7 +8,7 @@ const initialStateCat: GlobalCategoryType = {
 };
 
 const initialStateRent: GloablRentType = {
-
+  sale: 0, rent: 0
 };
 
 export const Context = React.createContext<[GlobalType, React.Dispatch<React.SetStateAction<GlobalType>>]>([initialState, () => {}]);

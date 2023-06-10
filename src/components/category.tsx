@@ -7,25 +7,19 @@ import { Context2} from "../global";
 const Category= (Props: CategoryType)=>{
     let str: string = Props.seo_title;
     const [state, setState] = useContext(Context2);
-    let newState = state
-    // newState[Props.category_id] = 0;
+    let newState = state;
     setState(newState);
-     // MY_GLOBAL_VAR.str = 0;
      const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
             let newState1 = state;
             newState1[Props.category_id] = 1;
             setState(newState1)
             console.log(state)
-        //   MY_GLOBAL_VAR.str = 1;
-        //   console.log(MY_GLOBAL_VAR.str)
         } else {
             let newState1 = state;
             newState1[Props.category_id] = 0;
             setState(newState1)
             console.log(state)
-        //   MY_GLOBAL_VAR.str = 0;
-        //   console.log(MY_GLOBAL_VAR.str)
         }
       };
     if (str === "sedani"){
@@ -51,7 +45,7 @@ const Category= (Props: CategoryType)=>{
     }else if (str === "limuzini"){
         str = "ლიმუზინი"
     } else {
-        str = ""
+        str = Props.seo_title;
     }
 
     return (
