@@ -151,3 +151,6 @@ export type GlobalCategoryType = {
 export type GloablRentType = {
   [key: string]: number;
 }
+export type GlobalManModelType = {
+  [key: string]: number;
+}

@@ -2,13 +2,14 @@ import React, { useEffect, useState, useContext, ChangeEvent } from 'react';
 import CarInfo from './components/CarInfo';
 import ManufacturerLst from './components/manufacturerLst';
 import { CarInfoDataType } from './types/types';
-import { ManufacturerListType } from './types/types';
+import { ManufacturerListType, ModelListType } from './types/types';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { CategoryType, GlobalType, GloablRentType, GlobalCategoryType} from './types/types';
 import Category from './components/category';
-import { Context,Context2, Context3} from "./global";
+import { Context,Context2, Context3, Context4} from "./global";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { url } from 'inspector';
+import ManModel from './components/manModel';
 
 // const url = "https://api2.myauto.ge/ka/products/";
 const url2 = "https://static.my.ge/myauto/js/mans.json";
@@ -20,6 +21,7 @@ function App() {
   const [rentFilter, setRentFilter] = useContext(Context3);
   const [manFilter, setManFilter] = useContext(Context);
   const [categoryFilter, setCategoryFilter] = useContext(Context2);
+  const [modelFilter, setModelFilter] = useContext(Context4)
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<CarInfoDataType[]>([]);
   const [manufacturer, SetManufacturer] = useState<ManufacturerListType[]>([]);
@@ -30,6 +32,7 @@ function App() {
   const [toValue, setToValue] = useState<number>(NaN);
   const [checkbox1Checked, setCheckbox1Checked] = useState(false);
   const [checkbox2Checked, setCheckbox2Checked] = useState(false);
+  const [modelsState, setModelsState] = useState<ModelListType[]>([]);
   const [page, setPage] = useState(1);
   const [vehicle, setVehicle] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,6 +99,7 @@ function App() {
       } else {
         let newState1 = rentFilter;
         newState1["sale"] = 0;
+        setCheckbox1Checked(false);
         setRentFilter(newState1)
         console.log(rentFilter)
       }
@@ -112,6 +116,7 @@ function App() {
       } else {
         let newState1 = rentFilter;
         newState1["rent"] = 0;
+        setCheckbox2Checked(false);
         setRentFilter(newState1)
         console.log(rentFilter)
       }
@@ -145,7 +150,25 @@ function App() {
     if (selectedPeriod != null){
       periodopt = selectedPeriod;
     }
-    let newUrl: string = `${firstUrl}?Page=${currentPage}&PriceFrom=${from}&PriceTo=${to}&ForRent=${rent}&SortOrder=${sortopt}&Period=${periodopt}`;
+    let catOpt: string = "";
+    for (const key in categoryFilter){
+      if (categoryFilter[key]=== 1){
+        catOpt = catOpt + key + ".";
+      }
+    }
+    if (catOpt !== ""){
+      catOpt = catOpt.slice(0, -1);
+    }
+    let manOpt: string = ""
+    for (const key in manFilter){
+      if (manFilter[key]===1){
+        manOpt = manOpt + key + "-";
+      }
+    }
+    if (manOpt !== ""){
+      manOpt = manOpt.slice(0, -1);
+    }
+    let newUrl: string = `${firstUrl}?Page=${currentPage}&PriceFrom=${from}&PriceTo=${to}&ForRent=${rent}&SortOrder=${sortopt}&Period=${periodopt}&Cats=${catOpt}&Mans=${manOpt}`;
     console.log(newUrl)
     setDataUrl(newUrl)
   }
@@ -183,6 +206,17 @@ function App() {
       console.log(error);
     }
   };
+  const fetchModel = () => {
+    manufacturer.forEach(async (element)=>{
+      try {
+        const response = await fetch(`https://api2.myauto.ge/ka/getManModels?man_id=${element.man_id}`);
+        const responseData = await response.json();
+        setModelsState([...responseData.data]);
+      } catch (error) {
+        console.log(error);
+      }
+    })
+  }
 
   useEffect(() => {
     fetchData();
@@ -196,6 +230,13 @@ function App() {
     FilteringUrl();
   }, [currentPage, selectedSortOption, selectedPeriod])
 
+  // useEffect(() => {
+  //   fetchModel();
+  // }, [manufacturer]);
+
+  useEffect(()=>{
+    console.log("changed")
+  }, [rentFilter, manFilter, categoryFilter, modelFilter])
   
   const handlePeriodFilter = (period: string) => {
     setSelectedPeriod(period);
@@ -219,9 +260,9 @@ function App() {
       <button onClick={()=>setVehicle(2)}>2</button>
       <div>გარიგების ტიპი</div>
       <DropdownButton id="dropdownMenuButton" title="გარიგების ტიპი">
-        <label htmlFor='1'><input type='checkbox' id='1' onChange={handleChangeSale} checked={checkbox1Checked}></input>იყიდება</label>
+        <label htmlFor='-1'><input type='checkbox' id='-1' onChange={handleChangeSale} checked={checkbox1Checked}></input>იყიდება</label>
         <br></br>
-        <label htmlFor='2'><input type='checkbox' id='2' onChange={handleChangeRent} checked={checkbox2Checked}></input>ქირავდება</label>
+        <label htmlFor='-2'><input type='checkbox' id='-2' onChange={handleChangeRent} checked={checkbox2Checked}></input>ქირავდება</label>
       </DropdownButton>
       <div>მწარმოებელი</div>
      <DropdownButton id="dropdownMenuButton" title="მწარმოებელი">
@@ -245,6 +286,13 @@ function App() {
           <Category key = {info.category_id} {...info}/>
         )
       })}
+    </DropdownButton>
+    <br></br>
+    <div>Model</div>
+    <DropdownButton id="dropdownMenuButton" title="Model">
+    {modelsState.filter((model)=> manFilter.hasOwnProperty(model.man_id)).map((model) => (
+    <ManModel key={model.model_id} {...model} />
+  ))}
     </DropdownButton>
     <br></br>
     <div className='input-group'>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { GlobalType, GloablRentType, GlobalCategoryType } from "./types/types";
+import { GlobalType, GloablRentType, GlobalCategoryType, GlobalManModelType} from "./types/types";
 
 const initialState: GlobalType = {
 };
@@ -9,6 +9,9 @@ const initialStateCat: GlobalCategoryType = {
 
 const initialStateRent: GloablRentType = {
   sale: 0, rent: 0
+};
+const initialStateManModel: GlobalManModelType = {
+
 };
 
 export const Context = React.createContext<[GlobalType, React.Dispatch<React.SetStateAction<GlobalType>>]>([initialState, () => {}]);
@@ -36,4 +39,10 @@ export const Store3: React.FC = () => {
   return <Context3.Provider value={[state, setState]}></Context3.Provider>;
 };
 
+export const Context4 = React.createContext<[GlobalManModelType, React.Dispatch<React.SetStateAction<GlobalManModelType>>]>([initialStateManModel, () => {}]);
 
+export const Store4: React.FC = () => {
+  const [state, setState] = useState(initialStateManModel);
+
+  return <Context4.Provider value={[state, setState]}></Context4.Provider>;
+};
