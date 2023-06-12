@@ -10,6 +10,7 @@ import { Context,Context2, Context3, Context4} from "./global";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { url } from 'inspector';
 import ManModel from './components/manModel';
+import { info } from 'console';
 
 // const url = "https://api2.myauto.ge/ka/products/";
 const url2 = "https://static.my.ge/myauto/js/mans.json";
@@ -33,12 +34,105 @@ function App() {
   const [checkbox1Checked, setCheckbox1Checked] = useState(false);
   const [checkbox2Checked, setCheckbox2Checked] = useState(false);
   const [modelsState, setModelsState] = useState<ModelListType[]>([]);
-  const [page, setPage] = useState(1);
   const [vehicle, setVehicle] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
   
   const [filteredData, setFilteredData] = useState<CarInfoDataType[]>([]);
+
+ const [manufacturerPotential, setManufacturerPotential] = useState<GlobalType>({});
+ const [manufacturerChanged, setManufacturerChanged] = useState(0);
+ const [toDownload, setToDownload] = useState("")
+ const [downloaded, setDownloaded] = useState<string[]>([]);
+ const ManufacturerLst1= (Props: ManufacturerListType)=>{
+  const [ischecked, setIschecked] = useState(false);
+  useEffect(() => {
+    // Check if state[Props.category_id] is 1 and set ischecked accordingly
+    setIschecked(manufacturerPotential[Props.man_id] === 1);
+  }, [manufacturerPotential, Props.man_id]);
+    let str1: string = Props.man_id;
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+      let str123 = Props.man_id
+        if (event.target.checked) {
+          let newState1 = manufacturerPotential;
+          newState1[Props.man_id] = 1;
+          setIschecked(true);
+          setManufacturerPotential(newState1);
+          setToDownload(Props.man_id);
+          setManufacturerChanged(manufacturerChanged + 1);
+        } else {
+          let newState1 = manufacturerPotential;
+          newState1[Props.man_id] = 0;
+          setIschecked(false);
+          setManufacturerPotential(newState1);
+          setToDownload(Props.man_id);
+          setManufacturerChanged(manufacturerChanged + 1);;
+        }
+      };
+    return (
+        <div>
+            <label htmlFor={Props.man_id}><input type="checkbox" checked={ischecked} onChange={handleChange} id= {Props.man_id}></input>{Props.man_name}</label>
+      </div>
+    )
+}
+
+const handleVehicle0 = () =>{
+  setVehicle(0);
+  for (const key in categoryFilter){
+    let newState1 = categoryFilter;
+    newState1[key] = 0;
+    setCategoryFilter(newState1)
+  }
+  for (const key in manufacturerPotential){
+    let newState1 = manufacturerPotential;
+    newState1[key] = 0;
+    setManufacturerPotential(newState1)
+  }
+  for (const key in modelFilter){
+    let newState1 = modelFilter;
+    newState1[key] = 0;
+    setModelFilter(newState1)
+  }
+}
+const handleVehicle1 = () =>{
+  setVehicle(1);
+  for (const key in categoryFilter){
+    let newState1 = categoryFilter;
+    newState1[key] = 0;
+    setCategoryFilter(newState1)
+  }
+  for (const key in manufacturerPotential){
+    let newState1 = manufacturerPotential;
+    newState1[key] = 0;
+    setManufacturerPotential(newState1)
+  }
+  for (const key in modelFilter){
+    let newState1 = modelFilter;
+    newState1[key] = 0;
+    setModelFilter(newState1)
+  }
+}
+const handleVehicle2 = () =>{
+  setVehicle(2);
+  for (const key in categoryFilter){
+    let newState1 = categoryFilter;
+    newState1[key] = 0;
+    setCategoryFilter(newState1)
+  }
+  for (const key in manufacturerPotential){
+    let newState1 = manufacturerPotential;
+    newState1[key] = 0;
+    setManufacturerPotential(newState1)
+  }
+  for (const key in modelFilter){
+    let newState1 = modelFilter;
+    newState1[key] = 0;
+    setModelFilter(newState1)
+  }
+}
+
+
+
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
@@ -160,9 +254,16 @@ function App() {
       catOpt = catOpt.slice(0, -1);
     }
     let manOpt: string = ""
-    for (const key in manFilter){
-      if (manFilter[key]===1){
-        manOpt = manOpt + key + "-";
+    for (const key in manufacturerPotential){
+      if (manufacturerPotential[key]===1){
+        manOpt = manOpt + key;
+        for (const key2 in modelFilter){
+          const parts = key2.split(".", 2);
+          if (parts[0] === key && modelFilter[key2] === 1){
+            manOpt = manOpt + "."+ parts[1]
+          }
+        }
+        manOpt = manOpt + "-";
       }
     }
     if (manOpt !== ""){
@@ -206,16 +307,18 @@ function App() {
       console.log(error);
     }
   };
-  const fetchModel = () => {
-    manufacturer.forEach(async (element)=>{
+  const fetchModel = async () => {
+    console.log("fetching");
+    if (downloaded.includes(toDownload) === false){
       try {
-        const response = await fetch(`https://api2.myauto.ge/ka/getManModels?man_id=${element.man_id}`);
+        const response = await fetch(`https://api2.myauto.ge/ka/getManModels?man_id=${toDownload}`);
         const responseData = await response.json();
-        setModelsState([...responseData.data]);
+        setModelsState([...modelsState,...responseData.data]);
+        setDownloaded([...downloaded, toDownload])
       } catch (error) {
         console.log(error);
       }
-    })
+    }
   }
 
   useEffect(() => {
@@ -230,13 +333,13 @@ function App() {
     FilteringUrl();
   }, [currentPage, selectedSortOption, selectedPeriod])
 
-  // useEffect(() => {
-  //   fetchModel();
-  // }, [manufacturer]);
+  useEffect(() => {
+    fetchModel();
+  }, [manufacturerChanged]);
 
   useEffect(()=>{
     console.log("changed")
-  }, [rentFilter, manFilter, categoryFilter, modelFilter])
+  }, [rentFilter, manFilter, categoryFilter, modelFilter, Context])
   
   const handlePeriodFilter = (period: string) => {
     setSelectedPeriod(period);
@@ -255,9 +358,9 @@ function App() {
       <div>
         miutitet transportis tipi
       </div>
-      <button onClick={()=>setVehicle(0)}>0</button>
-      <button onClick={()=>setVehicle(1)}>1</button>
-      <button onClick={()=>setVehicle(2)}>2</button>
+      <button onClick={()=>handleVehicle0()}>0</button>
+      <button onClick={()=>handleVehicle1()}>1</button>
+      <button onClick={()=>handleVehicle2()}>2</button>
       <div>გარიგების ტიპი</div>
       <DropdownButton id="dropdownMenuButton" title="გარიგების ტიპი">
         <label htmlFor='-1'><input type='checkbox' id='-1' onChange={handleChangeSale} checked={checkbox1Checked}></input>იყიდება</label>
@@ -266,18 +369,18 @@ function App() {
       </DropdownButton>
       <div>მწარმოებელი</div>
      <DropdownButton id="dropdownMenuButton" title="მწარმოებელი">
-      <div>პოპულარული</div>
-      {manufacturer.filter((info) => info.is_spec !== "1" && info.is_car === "1").map((info)=>{
-            return (
-              <ManufacturerLst key ={info.man_id} {...info}/>
-            )
-          })}
-      <div>სხვა</div>
-      {manufacturer.filter((info)=> info.is_spec !== "0" && info.is_car === "1").map((info)=>{
-            return (
-              <ManufacturerLst key ={info.man_id} {...info}/>
-            )
-          })}
+      {manufacturer.filter((info) => {
+      if (vehicle === 0) {
+        return info.is_car === "1";
+      } else if (vehicle === 1) {
+        return info.is_spec === "1";
+      } else if (vehicle === 2) {
+        return info.is_moto === "1";
+      }
+      return false;
+    }).map((info) => {
+      return <ManufacturerLst1 key={info.man_id} {...info} />;
+    })}
     </DropdownButton>
     <div>კატეგორია</div>
     <DropdownButton id="dropdownMenuButton" title="კატეგორია">
@@ -287,10 +390,9 @@ function App() {
         )
       })}
     </DropdownButton>
-    <br></br>
-    <div>Model</div>
-    <DropdownButton id="dropdownMenuButton" title="Model">
-    {modelsState.filter((model)=> manFilter.hasOwnProperty(model.man_id)).map((model) => (
+    <div>მოდელი</div>
+    <DropdownButton id="dropdownMenuButton" title="მოდელი">
+    {modelsState.filter((model)=> manufacturerPotential.hasOwnProperty(model.man_id) && (manufacturerPotential[model.man_id] === 1)).map((model) => (
     <ManModel key={model.model_id} {...model} />
   ))}
     </DropdownButton>

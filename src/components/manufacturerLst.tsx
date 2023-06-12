@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import { ManufacturerListType } from "../types/types";
-import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { Context} from "../global";
 
 
