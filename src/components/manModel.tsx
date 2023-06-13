@@ -20,18 +20,14 @@ const ManModel= (Props: ModelListType)=>{
           let newState1 = state;
           newState1[`${Props.man_id}.${Props.model_id}`] = 1;
           setIschecked(true);
-          setState(newState1)
-          console.log(state)
+          setState(newState1);
         //   MY_GLOBAL_VAR.str = 1;
         //   console.log(MY_GLOBAL_VAR.str)
         } else {
           let newState1 = state;
           newState1[`${Props.man_id}.${Props.model_id}`] = 0;
-          setIschecked(false)
-          setState(newState1)
-          console.log(state)
-        //   MY_GLOBAL_VAR.str = 0;
-        //   console.log(MY_GLOBAL_VAR.str)
+          setIschecked(false);
+          setState(newState1);
         }
       };
     return (

@@ -20,13 +20,11 @@ const Category= (Props: CategoryType)=>{
             newState1[Props.category_id] = 1;
             setIschecked(true);
             setState(newState1)
-            console.log(state)
         } else {
             let newState1 = state;
             newState1[Props.category_id] = 0;
             setIschecked(false)
             setState(newState1)
-            console.log(state)
         }
       };
     if (str === "sedani"){

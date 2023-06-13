@@ -36,6 +36,8 @@ function App() {
   const [modelsState, setModelsState] = useState<ModelListType[]>([]);
   const [vehicle, setVehicle] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [maxPages, setMaxPages] = useState<number>(0);
+  const [pageClicked, setPageClicked] = useState(0);
 
   
   const [filteredData, setFilteredData] = useState<CarInfoDataType[]>([]);
@@ -66,7 +68,7 @@ function App() {
           setIschecked(false);
           setManufacturerPotential(newState1);
           setToDownload(Props.man_id);
-          setManufacturerChanged(manufacturerChanged + 1);;
+          setManufacturerChanged(manufacturerChanged + 1);
         }
       };
     return (
@@ -136,13 +138,23 @@ const handleVehicle2 = () =>{
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
+    setPageClicked(pageClicked + 1);
   };
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => prevPage - 1);
+    setPageClicked(pageClicked + 1);
   };
+  const handleFirstPage = () => {
+    setCurrentPage(1);
+    setPageClicked(pageClicked + 1);
+  }
+  const handleLastPage = () => {
+    setCurrentPage(maxPages);
+    setPageClicked(pageClicked + 1);
+  }
   const renderPageButtons = () => {
     const pageButtons = [];
-    const numButtons = 7;
+    const numButtons = Math.min(7, maxPages);
 
     // Calculate the range of visible page buttons based on the current page
     let startPage = currentPage - Math.floor(numButtons / 2);
@@ -154,11 +166,12 @@ const handleVehicle2 = () =>{
       startPage = 1;
     }
 
-    for (let i = startPage; i <= endPage; i++) {
+    for (let i = startPage; i <= Math.min(endPage, maxPages); i++) {
       pageButtons.push(
         <button
           key={i}
-          onClick={() => setCurrentPage(i)}
+          onClick={() => {setCurrentPage(i);
+          setPageClicked(pageClicked + 1);}}
           disabled={i === currentPage}
         >
           {i}
@@ -215,7 +228,7 @@ const handleVehicle2 = () =>{
         console.log(rentFilter)
       }
     };
-  const FilteringUrl = () =>{
+  const FilteringUrl = (indicator: number) =>{
     let from :string = "" 
     if (isNaN(fromValue)){
       from = ""
@@ -270,6 +283,10 @@ const handleVehicle2 = () =>{
       manOpt = manOpt.slice(0, -1);
     }
     let newUrl: string = `${firstUrl}?Page=${currentPage}&PriceFrom=${from}&PriceTo=${to}&ForRent=${rent}&SortOrder=${sortopt}&Period=${periodopt}&Cats=${catOpt}&Mans=${manOpt}`;
+    if ((indicator === 1) && newUrl !== dataUrl){
+      newUrl = `${firstUrl}?Page=1&PriceFrom=${from}&PriceTo=${to}&ForRent=${rent}&SortOrder=${sortopt}&Period=${periodopt}&Cats=${catOpt}&Mans=${manOpt}`;
+      setCurrentPage(1);
+    }
     console.log(newUrl)
     setDataUrl(newUrl)
   }
@@ -302,6 +319,7 @@ const handleVehicle2 = () =>{
       setLoading(false);
       setData(responseData.data.items);
       setFilteredData(responseData.data.items)
+      setMaxPages(responseData.data.meta.last_page)
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -330,8 +348,8 @@ const handleVehicle2 = () =>{
   }, [dataUrl])
 
   useEffect(()=>{
-    FilteringUrl();
-  }, [currentPage, selectedSortOption, selectedPeriod])
+    FilteringUrl(2);
+  }, [pageClicked, selectedSortOption, selectedPeriod])
 
   useEffect(() => {
     fetchModel();
@@ -423,7 +441,8 @@ const handleVehicle2 = () =>{
       <Dropdown.Item onClick={()=>handlePeriodFilter("3w")}>3w
       </Dropdown.Item>
       </DropdownButton>
-      <button type='button' onClick={()=>FilteringUrl()}>filter</button>
+      <button type='button' onClick={()=>{FilteringUrl(1)
+      }}>filter</button>
       <DropdownButton id="sortDropdown" title="დახარისხება">
         <Dropdown.Item onClick={() => {handleSortOption('1');}}>
           Sort by date (ascending)
@@ -450,15 +469,18 @@ const handleVehicle2 = () =>{
                     )
                 })}
       <div>
+      <button disabled={currentPage === 1} onClick={handleFirstPage}>
+        First
+      </button>
       <button disabled={currentPage === 1} onClick={handlePrevPage}>
         Previous
       </button>
 
       {renderPageButtons()}
 
-      <button onClick={handleNextPage}>Next</button>
+      <button disabled={currentPage === maxPages}onClick={handleNextPage}>Next</button>
+      <button disabled={currentPage === maxPages}onClick={handleLastPage}>Last</button>
       </div>
-
     </div>
   );
 }

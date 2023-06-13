@@ -92,7 +92,7 @@ const CarInfo = (props: CarInfoDataType)=>{
         carPrice = "ფასი შეთანხმებით"
      }
      else {
-        carPrice = `${props.price_value}`
+        carPrice = `${props.price_value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
      }
      let ForRent : string = "";
      if (props.for_rent) {
