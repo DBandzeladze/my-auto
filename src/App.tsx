@@ -372,116 +372,296 @@ const handleVehicle2 = () =>{
 
 
   return (
-    <div className="container">
-      <div>
-        miutitet transportis tipi
-      </div>
-      <button onClick={()=>handleVehicle0()}>0</button>
-      <button onClick={()=>handleVehicle1()}>1</button>
-      <button onClick={()=>handleVehicle2()}>2</button>
-      <div>გარიგების ტიპი</div>
-      <DropdownButton id="dropdownMenuButton" title="გარიგების ტიპი">
-        <label htmlFor='-1'><input type='checkbox' id='-1' onChange={handleChangeSale} checked={checkbox1Checked}></input>იყიდება</label>
-        <br></br>
-        <label htmlFor='-2'><input type='checkbox' id='-2' onChange={handleChangeRent} checked={checkbox2Checked}></input>ქირავდება</label>
-      </DropdownButton>
-      <div>მწარმოებელი</div>
-     <DropdownButton id="dropdownMenuButton" title="მწარმოებელი">
-      {manufacturer.filter((info) => {
-      if (vehicle === 0) {
-        return info.is_car === "1";
-      } else if (vehicle === 1) {
-        return info.is_spec === "1";
-      } else if (vehicle === 2) {
-        return info.is_moto === "1";
-      }
-      return false;
-    }).map((info) => {
-      return <ManufacturerLst1 key={info.man_id} {...info} />;
-    })}
-    </DropdownButton>
-    <div>კატეგორია</div>
-    <DropdownButton id="dropdownMenuButton" title="კატეგორია">
-      {categoty.filter((info)=>info.vehicle_types[0]===vehicle).map((info)=>{
-        return (
-          <Category key = {info.category_id} {...info}/>
-        )
-      })}
-    </DropdownButton>
-    <div>მოდელი</div>
-    <DropdownButton id="dropdownMenuButton" title="მოდელი">
-    {modelsState.filter((model)=> manufacturerPotential.hasOwnProperty(model.man_id) && (manufacturerPotential[model.man_id] === 1)).map((model) => (
-    <ManModel key={model.model_id} {...model} />
-  ))}
-    </DropdownButton>
-    <br></br>
-    <div className='input-group'>
-      <input type='number' id='number1' className="form-control" value={fromValue} onChange={handleFromValue}></input>
-      <div className="input-group-text">-</div>
-      <input type='number' id='number2' className="form-control" value={toValue} onChange={handleToValue}></input>
-    </div>
-    <br></br>
-    <DropdownButton id="periodDropdown" title="პერიოდი">
-      <Dropdown.Item onClick={()=>handlePeriodFilter("1h")}>1h
-      </Dropdown.Item>
-      <Dropdown.Item onClick={()=>handlePeriodFilter("2h")}>2h
-      </Dropdown.Item>
-      <Dropdown.Item onClick={()=>handlePeriodFilter("3h")}>3h
-      </Dropdown.Item>
-      <Dropdown.Item onClick={()=>handlePeriodFilter("1d")}>1d
-      </Dropdown.Item>
-      <Dropdown.Item onClick={()=>handlePeriodFilter("2d")}>2d
-      </Dropdown.Item>
-      <Dropdown.Item onClick={()=>handlePeriodFilter("3d")}>3d
-      </Dropdown.Item>
-      <Dropdown.Item onClick={()=>handlePeriodFilter("1w")}>1w
-      </Dropdown.Item>
-      <Dropdown.Item onClick={()=>handlePeriodFilter("2w")}>2w
-      </Dropdown.Item>
-      <Dropdown.Item onClick={()=>handlePeriodFilter("3w")}>3w
-      </Dropdown.Item>
-      </DropdownButton>
-      <button type='button' onClick={()=>{FilteringUrl(1)
-      }}>filter</button>
-      <DropdownButton id="sortDropdown" title="დახარისხება">
-        <Dropdown.Item onClick={() => {handleSortOption('1');}}>
-          Sort by date (ascending)
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => {handleSortOption('2');}}>
-          Sort by date (descending)
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => {handleSortOption('3');}}>
-          Sort by price (ascending)
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => {handleSortOption('4');}}>
-          Sort by price (descending)
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => {handleSortOption('5');}}>
-          Sort by car run (ascending)
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => {handleSortOption('6');}}>
-          Sort by car run (descending)
-        </Dropdown.Item>
-      </DropdownButton>
-      {data.map((info)=>{
-                    return(
-                        <CarInfo key={info.car_id} {...info}/>
+    <div className='flex justify-center mt-20 bg-gray-100'>
+
+      <div className="flex flex-no-wrap justify-center">
+
+          <div className='flex flex-col mr-20 bg-white h-[385px] p-[20px]'>  {/* marjvena mxare */}
+           <div>
+           transportis tipi
+           </div>
+           <div>
+           <button onClick={()=>handleVehicle0()}>0</button>
+           <button onClick={()=>handleVehicle1()}>1</button>
+           <button onClick={()=>handleVehicle2()}>2</button>
+           </div>
+
+                <div className='mb-[10px]'>  {/* garigebis tipebi */}
+
+                    <div className='text-[12px] font-medium'>
+
+                      გარიგების ტიპი
+
+                    </div>
+
+                    <DropdownButton   title="გარიგების ტიპი">
+
+                    <label htmlFor='-1'><input type='checkbox' id='-1' onChange={handleChangeSale} checked={checkbox1Checked}></input>იყიდება</label>
+
+                    <br></br>
+
+                    <label htmlFor='-2'><input type='checkbox' id='-2' onChange={handleChangeRent} checked={checkbox2Checked}></input>ქირავდება</label>
+
+                    </DropdownButton>
+
+                </div>
+
+
+
+
+                <div className='mb-[10px]'> {/* mwarmoebeli */}
+
+                    <div className='text-[12px] font-medium'>
+
+                      მწარმოებელი
+
+                    </div>
+
+                    <DropdownButton id="dropdownMenuButton" title="მწარმოებელი">
+
+                    {manufacturer.filter((info) => {
+
+                    if (vehicle === 0) {
+
+                    return info.is_car === "1";
+
+                        } else if (vehicle === 1) {
+
+                    return info.is_spec === "1";
+
+                    } else if (vehicle === 2) {
+
+                      return info.is_moto === "1";
+
+                    }
+
+                    return false;
+
+                    }).map((info) => {
+
+                    return <ManufacturerLst1 key={info.man_id} {...info} />;
+
+                      })}
+
+                  </DropdownButton>
+
+                </div>
+
+
+
+
+
+                <div className='mb-[10px]'>   {/* kategoria */}
+
+                    <div className='text-[12px] font-medium'>
+
+                      კატეგორია
+
+                    </div>
+
+                  <DropdownButton id="dropdownMenuButton" title="კატეგორია">
+
+                  {categoty.filter((info)=>info.vehicle_types[0]===vehicle).map((info)=>{
+
+                  return (
+
+                  <Category key = {info.category_id} {...info}/>
+
                     )
-                })}
-      <div>
-      <button disabled={currentPage === 1} onClick={handleFirstPage}>
-        First
-      </button>
-      <button disabled={currentPage === 1} onClick={handlePrevPage}>
-        Previous
-      </button>
 
-      {renderPageButtons()}
+                  })}
 
-      <button disabled={currentPage === maxPages}onClick={handleNextPage}>Next</button>
-      <button disabled={currentPage === maxPages}onClick={handleLastPage}>Last</button>
+                  </DropdownButton>
+
+                </div>
+
+
+
+
+                <div className='mb-[4px]'>  {/* modelebi */}
+
+                   <div className='text-[12px] font-medium'>
+
+                      მოდელი
+
+                    </div>
+
+                  <DropdownButton id="dropdownMenuButton" title="მოდელი">
+
+                  {modelsState.filter((model)=> manufacturerPotential.hasOwnProperty(model.man_id) && (manufacturerPotential[model.man_id] === 1)).map((model) => (
+
+                  <ManModel key={model.model_id} {...model} />
+
+                  ))}
+
+                  </DropdownButton>
+
+                </div>
+
+               
+
+
+
+
+ 
+
+                <br></br>   {/* shercheva fasis mixedvit */}
+
+                <div className='input-group'>
+
+                <input type='number' id='number1' className="form-control" value={fromValue} onChange={handleFromValue}></input>
+
+                <div className="input-group-text">-</div>
+
+                <input type='number' id='number2' className="form-control" value={toValue} onChange={handleToValue}></input>
+
+                </div>
+
+                <br></br>
+
+
+
+
+                <button type='button' onClick={()=>{FilteringUrl(1)}}>მოძებნა</button>  {/* modzebnis gilaki */}
+
+
+
+
+          </div>
+
+
+
+
+
+          <div className='flex justify-baseline  flex-col  ml-20 '> {/* marcxena mxare */}
+
+                <div className='flex flex-row justify-end'>   {/* periodi da daxarisxeba */}
+
+                  <div className='mr-2'>
+
+                      <DropdownButton  id="periodDropdown" title="პერიოდი">
+
+                      <Dropdown.Item onClick={()=>handlePeriodFilter("1h")}>1h
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={()=>handlePeriodFilter("2h")}>2h
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={()=>handlePeriodFilter("3h")}>3h
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={()=>handlePeriodFilter("1d")}>1d
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={()=>handlePeriodFilter("2d")}>2d
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={()=>handlePeriodFilter("3d")}>3d
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={()=>handlePeriodFilter("1w")}>1w
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={()=>handlePeriodFilter("2w")}>2w
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={()=>handlePeriodFilter("3w")}>3w
+
+                      </Dropdown.Item>
+
+                      </DropdownButton>
+
+                  </div>
+
+               
+
+                  <div>
+
+                      <DropdownButton id="sortDropdown" title="დახარისხება">
+
+                      <Dropdown.Item onClick={() => {handleSortOption('1');}}>
+
+                          Sort by date (ascending)
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={() => {handleSortOption('2');}}>
+
+                        Sort by date (descending)
+
+                        </Dropdown.Item>
+
+                        <Dropdown.Item onClick={() => {handleSortOption('3');}}>
+
+                        Sort by price (ascending)
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={() => {handleSortOption('4');}}>
+
+                        Sort by price (descending)
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={() => {handleSortOption('5');}}>
+
+                        Sort by car run (ascending)
+
+                      </Dropdown.Item>
+
+                      <Dropdown.Item onClick={() => {handleSortOption('6');}}>
+
+                        Sort by car run (descending)
+
+                      </Dropdown.Item>
+
+                      </DropdownButton>`
+
+                  </div>  
+
+                </div>
+
+
+
+
+                <div>  {/* manqanebi */}
+
+                    {data.map((info)=>{
+
+                          return(
+
+                              <CarInfo key={info.car_id} {...info}/>
+
+                          )
+
+                      })}
+
+                </div>
+
+                <div>
+                  <button disabled={currentPage === 1} onClick={handleFirstPage}>
+                   First
+                   </button>
+                   <button disabled={currentPage === 1} onClick={handlePrevPage}>
+                    Previous
+                    </button>
+                    {renderPageButtons()}
+                    <button disabled={currentPage === maxPages}onClick={handleNextPage}>Next</button>
+                    <button disabled={currentPage === maxPages}onClick={handleLastPage}>Last</button>
+                </div>
+          </div>
+
       </div>
-    </div>
+
+  </div>
   );
 }
 
