@@ -11,6 +11,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { url } from 'inspector';
 import ManModel from './components/manModel';
 import { info } from 'console';
+import SearchDropdown from './components/SearchDropDown';
 
 // const url = "https://api2.myauto.ge/ka/products/";
 const url2 = "https://static.my.ge/myauto/js/mans.json";
@@ -153,33 +154,86 @@ const handleVehicle2 = () =>{
     setPageClicked(pageClicked + 1);
   }
   const renderPageButtons = () => {
+
     const pageButtons = [];
+  
     const numButtons = Math.min(7, maxPages);
-
+  
+  
+  
+  
     // Calculate the range of visible page buttons based on the current page
+  
     let startPage = currentPage - Math.floor(numButtons / 2);
+  
     let endPage = currentPage + Math.floor(numButtons / 2);
-
+  
+  
+  
+  
     if (startPage < 1) {
+  
       // Adjust if the start page is less than 1
+  
       endPage += Math.abs(startPage) + 1;
+  
       startPage = 1;
+  
     }
-
+  
+  
+  
+  
     for (let i = startPage; i <= Math.min(endPage, maxPages); i++) {
+  
+      const isButtonClicked = i === currentPage; // Add this line
+  
+  
+  
+  
       pageButtons.push(
-        <button
-          key={i}
-          onClick={() => {setCurrentPage(i);
-          setPageClicked(pageClicked + 1);}}
-          disabled={i === currentPage}
-        >
-          {i}
-        </button>
+  
+        <div className='mr-[20px] text-[15px]'>
+  
+          <button
+  
+            key={i}
+  
+            onClick={() => {
+  
+              setCurrentPage(i);
+  
+              setPageClicked(pageClicked + 1);
+  
+            }}
+  
+            disabled={isButtonClicked} // Replace i === currentPage with isButtonClicked
+  
+            className={isButtonClicked ? 'text-orange-600' : ''}
+  
+          >
+  
+           
+  
+              {i}
+  
+           
+  
+           
+  
+          </button>
+  
+        </div>
+  
       );
+  
     }
-
+  
+  
+  
+  
     return pageButtons;
+  
   };
 
   const handleFromValue = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -379,6 +433,9 @@ const handleVehicle2 = () =>{
           <div className='flex flex-col mr-20 bg-white h-[385px] p-[20px]'>  {/* marjvena mxare */}
            <div>
            transportis tipi
+           </div>
+           <div>
+            <SearchDropdown options={[{label: "111", value: "111"},{label: "112", value: "112"}, {label: "113", value: "113"}]}></SearchDropdown>
            </div>
            <div>
            <button onClick={()=>handleVehicle0()}>0</button>
@@ -623,7 +680,7 @@ const handleVehicle2 = () =>{
 
                       </Dropdown.Item>
 
-                      </DropdownButton>`
+                      </DropdownButton><br></br>
 
                   </div>  
 
@@ -646,17 +703,102 @@ const handleVehicle2 = () =>{
 
                 </div>
 
-                <div>
-                  <button disabled={currentPage === 1} onClick={handleFirstPage}>
-                   First
-                   </button>
-                   <button disabled={currentPage === 1} onClick={handlePrevPage}>
-                    Previous
-                    </button>
-                    {renderPageButtons()}
-                    <button disabled={currentPage === maxPages}onClick={handleNextPage}>Next</button>
-                    <button disabled={currentPage === maxPages}onClick={handleLastPage}>Last</button>
-                </div>
+                <div className='flex justify-center items-center bg-white rounded-[5px] justify-'>
+
+<div className="mr-[20px]"> {/* pirvelze dasabrunebeli gilaki*/}
+
+   <button disabled={currentPage === 1} onClick={handleFirstPage} className={` ${
+        currentPage === 1 ? 'hidden' : ''
+      }`}>
+
+     <svg xmlns="http://www.w3.org/2000/svg" width="13.414" height="8.829" viewBox="0 0 13.414 8.829">
+
+       <g transform="translate(1 1.414)">
+
+         <path d="M12,12,9,9l3-3" transform="translate(-1 -6)" style={{ fill: "none", stroke: "rgb(253, 65, 0)", strokeLinecap: "round", strokeWidth: "2px", strokeLinejoin: "round" }}></path>
+
+         <path d="M12,12,9,9l3-3" transform="translate(-6 -6)" style={{ fill: "none", stroke: "rgb(253, 65, 0)", strokeLinecap: "round", strokeWidth: "2px", strokeLinejoin: "round" }}></path>
+
+         <line y2="6" transform="translate(0)" style={{ fill: "none", stroke: "rgb(253, 65, 0)", strokeLinecap: "round", strokeWidth: "2px" }}></line>
+
+         </g>
+
+       </svg>
+
+   </button>
+
+ </div>
+
+
+
+
+
+
+
+ <div className="mr-[20px]"> {/* previous gilaki*/}
+
+   <button disabled={currentPage === 1} onClick={handlePrevPage} className={` ${
+        currentPage === 1 ? 'hidden' : ''
+      }`}>
+
+     <svg xmlns="http://www.w3.org/2000/svg" width="5.414" height="8.829" viewBox="0 0 5.414 8.829">
+
+       <path d="M12,12,9,9l3-3" transform="translate(-8 -4.586)" style={{ fill: "none", stroke: "rgb(253, 65, 0)", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2px" }}></path>
+
+     </svg>
+
+   </button>
+
+ </div>
+
+
+
+   {renderPageButtons()}
+
+   <div className="mr-[20px]">  {/* next gilaki*/}
+
+     <button disabled={currentPage === maxPages} onClick={handleNextPage} className={` ${
+        currentPage === maxPages ? 'hidden' : ''
+      }`}>
+
+       <svg xmlns="http://www.w3.org/2000/svg" width="5.414" height="8.829" viewBox="0 0 5.414 8.829">
+
+         <path d="M9,12l3-3L9,6" transform="translate(-7.586 -4.586)" style={{ fill: "none", stroke: "rgb(253, 65, 0)", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2px" }}></path>
+
+       </svg>
+
+     </button>
+
+   </div>
+
+
+
+ <div className="mr-[20px]"> {/* boloshi gadasasvleli gilaki*/}
+
+   <button disabled={currentPage === maxPages} onClick={handleLastPage} className={` ${
+        currentPage === maxPages ? 'hidden' : ''
+      }`}>
+
+     <svg xmlns="http://www.w3.org/2000/svg" width="13.414" height="8.829" viewBox="0 0 13.414 8.829">
+
+       <g transform="translate(-1134.586 -2682.586)">
+
+         <path d="M9,12l3-3L9,6" transform="translate(1127 2678)" style={{ fill: "none", stroke: "rgb(253, 65, 0)", strokeLinecap: "round", strokeWidth: "2px", strokeLinejoin: "round" }}></path>
+
+         <path d="M9,12l3-3L9,6" transform="translate(1132 2678)" style={{ fill: "none", stroke: "rgb(253, 65, 0)", strokeLinecap: "round", strokeWidth: "2px", strokeLinejoin: "round" }}></path>
+
+         <line y2="6" transform="translate(1147 2684)" style={{ fill: "none", stroke: "rgb(253, 65, 0)", strokeLinecap: "round", strokeWidth: "2px" }}></line>
+
+       </g>
+
+     </svg>
+
+   </button>
+
+ </div>
+
+
+</div>
           </div>
 
       </div>

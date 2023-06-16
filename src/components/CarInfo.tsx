@@ -103,7 +103,7 @@ const CarInfo = (props: CarInfoDataType)=>{
      }
  
     return (
-      <div className='flex flex-row w-[750px] h-[150px]   bg-white mb-4 p-[15px] rounded-[10px]'>
+      <div className='flex flex-row w-[750px] h-[180px]   bg-white mb-4 p-[15px] rounded-[10px]'>
 
       <div className="flex"> {/* surati */}
 
@@ -188,6 +188,7 @@ const CarInfo = (props: CarInfoDataType)=>{
                 </div>
 
             </div>
+            <div className="h-[20px]" />
 
 
 
