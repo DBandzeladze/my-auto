@@ -1,11 +1,32 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
+// tailwind.config.js
 
+
+
+
+module.exports = {
+
+  content: [
+
+    "./src/**/*.{js,jsx,ts,tsx}",
+
+  ],
+
+  theme: {
+
+    extend: {
+
+      colors: {
+
+        custom: 'rgb(253, 65, 0)',
+
+      },
+
+    },
+
+  },
+
+  variants: {},
+
+  plugins: [],
+
+}

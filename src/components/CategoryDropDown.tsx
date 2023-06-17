@@ -8,7 +8,7 @@ interface Option {
 }
 
 
-const SearchDropdown: React.FC<{ categories: CategoryType[] }> = ({ categories }) => {
+const CategoryDropDown: React.FC<{ categories: CategoryType[] }> = ({ categories }) => {
   const [state, setState] = useContext(Context2);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -56,7 +56,7 @@ const SearchDropdown: React.FC<{ categories: CategoryType[] }> = ({ categories }
   };
 
   const getSelectedLabels = () => {
-    return selectedOptions.map((option) => option.seo_title).join('.');
+    return selectedOptions.map((option) => option.seo_title).join(',');
   };
 
   const filteredOptions = options.filter((option) =>
@@ -98,4 +98,4 @@ const SearchDropdown: React.FC<{ categories: CategoryType[] }> = ({ categories }
   );
 };
 
-export default SearchDropdown;
+export default CategoryDropDown;
