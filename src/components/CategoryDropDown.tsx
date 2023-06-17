@@ -25,6 +25,16 @@ const CategoryDropDown: React.FC<{ categories: CategoryType[] }> = ({ categories
     setSelectedOptions(categories.filter((opt)=>(state[opt.category_id] === 1)).map(({seo_title, category_id})=>({seo_title, category_id: category_id.toString()})));
   }, [state, options, categories]);
 
+  const clearFilter = ()=>{
+    let newState = state;
+    for (const key in newState){
+      newState[key] = 0
+    }
+    setState(newState);
+    setSelectedOptions([]);
+  }
+
+
   const handleToggleDropdown = () => {
     setIsOpen(!isOpen);
     setSearchTerm(''); // Reset search term when opening/closing the dropdown
@@ -92,6 +102,23 @@ const CategoryDropDown: React.FC<{ categories: CategoryType[] }> = ({ categories
               </label>
             </div>
           ))}
+          <div>
+            {selectedOptions.length !== 0 && (
+              <div>
+                <hr></hr>
+                <button
+                  title="clean the filter"
+                  onClick={()=>clearFilter()}
+                  className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                >
+                  Clear Filter
+                </button>
+                <button title="choose"
+                 onClick={()=>setIsOpen(false)}
+                  className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">choose</button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

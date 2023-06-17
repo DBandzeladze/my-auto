@@ -147,6 +147,14 @@ const ManDropDown: React.FC<{ manufacturer: ManufacturerListType[] }> = ({ manuf
   const filteredOptions = options.filter((option) =>
     option.man_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const clearFilter = ()=>{
+    let newState = manufacturerPotential;
+    for (const key in newState){
+      newState[key] = 0
+    }
+    setManufacturerPotential(newState);
+    setSelectedOptions([]);
+  }
 
   const placeholderText = selectedOptions.length > 0 ? getSelectedLabels() : 'მწარმოებელი';
 
@@ -177,6 +185,23 @@ const ManDropDown: React.FC<{ manufacturer: ManufacturerListType[] }> = ({ manuf
               </label>
             </div>
           ))}
+          <div>
+            {selectedOptions.length !== 0 && (
+              <div>
+                <hr></hr>
+                <button
+                  title="clean the filter"
+                  onClick={()=>clearFilter()}
+                  className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                >
+                  Clear Filter
+                </button>
+                <button title="choose"
+                 onClick={()=>setIsOpen(false)}
+                  className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">choose</button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
