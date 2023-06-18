@@ -1,10 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { CarInfoDataType } from "../types/types";
 import { useState } from "react";
 import { ManufacturerListType } from "../types/types";
 import { ModelListType } from "../types/types";
-import { info } from "console";
-import { Context5 } from "../global";
 const url2 = "https://static.my.ge/myauto/js/mans.json";
 interface CarInfoProps extends CarInfoDataType {
   isDollar: boolean;
@@ -473,10 +471,8 @@ const CarInfo: React.FC<CarInfoProps> = ({ isDollar, ...props }) => {
               </div>
               <hr></hr>
               <div className="flex flex-row ml-[20px]">
-               <div className="flex mr-4 text-[12px] text-gray-400">
-                  <div className="mr-[4px]">
-                  {props.views}
-                  </div>
+                <div className="flex mr-4 text-[12px] text-gray-400">
+                  <div className="mr-[4px]">{props.views}</div>
                   <div>ნახვა</div>
                 </div>
                 <div className="mr-4 text-[12px] text-gray-400">.</div>
@@ -484,7 +480,7 @@ const CarInfo: React.FC<CarInfoProps> = ({ isDollar, ...props }) => {
                   {timeDifferenceText}
                 </div>
                 <div className="flex flex-row ml-[50px]">
-                <div className="mr-[10px]">
+                  <div className="mr-[10px]">
                     {" "}
                     {/* fanqari */}
                     <svg
@@ -546,7 +542,6 @@ const CarInfo: React.FC<CarInfoProps> = ({ isDollar, ...props }) => {
               <div className="flex flex-row justify-start h-[15px] ml-[12px] pl-[48px]">
                 {" "}
                 {/* meotxe xazi */}
-      
                 <div className="flex flex-row items-center ml-[200px]">
                   {" "}
                   {/* prosta logoebi */}

@@ -1,25 +1,17 @@
 import React, { useEffect, useState, useContext, ChangeEvent } from "react";
 import CarInfo from "./components/CarInfo";
-import ManufacturerLst from "./components/manufacturerLst";
 import { CarInfoDataType } from "./types/types";
 import { ManufacturerListType, ModelListType } from "./types/types";
-import { DropdownButton, Dropdown } from "react-bootstrap";
 import {
   CategoryType,
   GlobalType,
   GloablRentType,
   GlobalCategoryType,
 } from "./types/types";
-import Category from "./components/category";
 import { Context, Context2, Context3, Context4 } from "./global";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { url } from "inspector";
-import ManModel from "./components/manModel";
-import { info } from "console";
-import SearchDropdown from "./components/SearchDropDown";
 import CategoryDropDown from "./components/CategoryDropDown";
 import ModelDropDown from "./components/ModelDropDown";
-import ManDropDown from "./components/ManDropDown";
 import PeriodDropDown from "./components/periodDropDown";
 // const url = "https://api2.myauto.ge/ka/products/";
 const url2 = "https://static.my.ge/myauto/js/mans.json";
@@ -69,7 +61,6 @@ function App() {
   const [filter, setFilter] = useState(false);
   const [change1, setChange1] = useState(1);
 
-
   const [isOpenSale, setIsOpenSale] = useState(false);
   const toggleDropdown = () => {
     setIsOpenSale(!isOpenSale);
@@ -95,7 +86,6 @@ function App() {
     const [options, setOptions] = useState<Option[]>(
       manufacturer.map(({ man_name, man_id }) => ({ man_name, man_id }))
     );
-
 
     useEffect(() => {
       const handleResize = () => {
@@ -140,7 +130,6 @@ function App() {
       }`;
       setButtonClasses(buttonClasses1);
       setButtonClasses2(buttonClasses3);
-      console.log(buttonClasses);
     }, [isDollar]);
 
     const handleToggleDropdown = () => {
@@ -153,7 +142,7 @@ function App() {
         setSearchTerm(e.target.value);
       }
     };
-    
+
     const handleCheckboxChange = (option: Option) => {
       const isSelected = selectedOptions.find(
         (selected) => selected.man_id === option.man_id
@@ -169,7 +158,6 @@ function App() {
         setManufacturerPotential(newState);
         setToDownload(option.man_id);
         setManufacturerChanged(manufacturerChanged + 1);
-        console.log(manufacturerPotential);
       } else {
         setSelectedOptions([...selectedOptions, option]);
         let newState = manufacturerPotential;
@@ -177,7 +165,6 @@ function App() {
         setManufacturerPotential(newState);
         setToDownload(option.man_id);
         setManufacturerChanged(manufacturerChanged + 1);
-        console.log(manufacturerPotential);
       }
     };
 
@@ -403,13 +390,11 @@ function App() {
       setCheckbox1Checked(true);
       setCheckbox2Checked(false);
       setRentFilter(newState1);
-      console.log(rentFilter);
     } else {
       let newState1 = rentFilter;
       newState1["sale"] = 0;
       setCheckbox1Checked(false);
       setRentFilter(newState1);
-      console.log(rentFilter);
     }
   };
   const handleChangeRent = (event: ChangeEvent<HTMLInputElement>) => {
@@ -420,13 +405,11 @@ function App() {
       setCheckbox1Checked(false);
       setCheckbox2Checked(true);
       setRentFilter(newState1);
-      console.log(rentFilter);
     } else {
       let newState1 = rentFilter;
       newState1["rent"] = 0;
       setCheckbox2Checked(false);
       setRentFilter(newState1);
-      console.log(rentFilter);
     }
   };
   const FilteringUrl = (indicator: number) => {
@@ -494,7 +477,6 @@ function App() {
       newUrl = `${firstUrl}?Page=1&PriceFrom=${from}&PriceTo=${to}&ForRent=${rent}&SortOrder=${sortopt}&Period=${periodopt}&Cats=${catOpt}&Mans=${manOpt}`;
       setCurrentPage(1);
     }
-    console.log(newUrl);
     setDataUrl(newUrl);
   };
 
@@ -534,7 +516,6 @@ function App() {
     }
   };
   const fetchModel = async () => {
-    console.log("fetching");
     if (downloaded.includes(toDownload) === false) {
       try {
         const response = await fetch(
@@ -565,9 +546,13 @@ function App() {
     fetchModel();
   }, [manufacturerChanged]);
 
-  useEffect(() => {
-    console.log("changed");
-  }, [rentFilter, manFilter, categoryFilter, modelFilter, Context]);
+  useEffect(() => {}, [
+    rentFilter,
+    manFilter,
+    categoryFilter,
+    modelFilter,
+    Context,
+  ]);
 
   const handlePeriodFilter = (period: string) => {
     switch (period) {
@@ -942,7 +927,6 @@ function App() {
                           <button
                             onClick={() => {
                               setIsDollar(false);
-                              console.log(isDollar);
                             }}
                           >
                             <div className={buttonClasses2}>
@@ -964,7 +948,6 @@ function App() {
                           <button
                             onClick={() => {
                               setIsDollar(true);
-                              console.log(isDollar);
                             }}
                           >
                             <div className={buttonClasses}>
@@ -1014,7 +997,7 @@ function App() {
                         type="button"
                         className="bg-custom w-[202px] h-[32px] rounded-[6px] text-white"
                         onClick={() => {
-                          setChange1(change1+1)
+                          setChange1(change1 + 1);
                           setFilter(false);
                           FilteringUrl(1);
                         }}
@@ -1026,231 +1009,235 @@ function App() {
                   </div>
                 ) : (
                   <>
-                  <div className="mb-[10px]">
-                  <button
-                  className="bg-white text-[13px] p-[8px] rounded-[3px] border"
-                  onClick={() => {setFilter(true)}}
-                >
-                  ფილტრი
-                </button>
-                  </div>
-                <div className="flex flex-row justify-between">
-                {/* periodi da daxarisxeba */}
-                <div>
-                  <PeriodDropDown
-                    handlePeriodFilter={handlePeriodFilter}
-                    handleSortOption={handleSortOption}
-                    periodTxt={periodTxt}
-                    sortTxt={sortTxt}
-                  ></PeriodDropDown>
-                </div>
-              </div>
-              {data.length == 0 ? (
-                  <div className="w-[750px] h-[550px] mt-[50px] text-center font-bold text-5xl">
-                    განცხადებები ვერ მოიძებნა
-                    <div className="mt-[50px] text-center text-2xl">
-                      შენი ძებნის პარამეტრების მიხედვით განცხადებები ვერ
-                      მოიძებნა. შეცვალე ან გამოიწერე პარამეტრები და მიიღე
-                      შეტყობინება ახალი განცხადებების განთავსების შემთხვევაში
+                    <div className="mb-[10px]">
+                      <button
+                        className="bg-white text-[13px] p-[8px] rounded-[3px] border"
+                        onClick={() => {
+                          setFilter(true);
+                        }}
+                      >
+                        ფილტრი
+                      </button>
                     </div>
-                  </div>
-                ) : (
-                  <></>
-                )}
-<div>
-                {" "}
-                {/* manqanebi */}
-                
-                {data.map((info) => {
-                  return (
-                    <CarInfo key={info.car_id} {...info} isDollar={isDollar} />
-                  );
-                })}
-              </div>
+                    <div className="flex flex-row justify-between">
+                      {/* periodi da daxarisxeba */}
+                      <div>
+                        <PeriodDropDown
+                          handlePeriodFilter={handlePeriodFilter}
+                          handleSortOption={handleSortOption}
+                          periodTxt={periodTxt}
+                          sortTxt={sortTxt}
+                        ></PeriodDropDown>
+                      </div>
+                    </div>
+                    {data.length == 0 ? (
+                      <div className="w-[750px] h-[550px] mt-[50px] text-center font-bold text-5xl">
+                        განცხადებები ვერ მოიძებნა
+                        <div className="mt-[50px] text-center text-2xl">
+                          შენი ძებნის პარამეტრების მიხედვით განცხადებები ვერ
+                          მოიძებნა. შეცვალე ან გამოიწერე პარამეტრები და მიიღე
+                          შეტყობინება ახალი განცხადებების განთავსების
+                          შემთხვევაში
+                        </div>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                    <div>
+                      {" "}
+                      {/* manqanebi */}
+                      {data.map((info) => {
+                        return (
+                          <CarInfo
+                            key={info.car_id}
+                            {...info}
+                            isDollar={isDollar}
+                          />
+                        );
+                      })}
+                    </div>
 
-              {data.length == 0 ? (
-                <></>
-              ) : (
-                <div className="flex justify-center items-center bg-white rounded-[5px] justify-">
-                  <div className="mr-[20px]">
-                    {" "}
-                    {/* pirvelze dasabrunebeli gilaki*/}
-                    <button
-                      disabled={currentPage === 1}
-                      onClick={handleFirstPage}
-                      className={` ${currentPage === 1 ? "hidden" : ""}`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="13.414"
-                        height="8.829"
-                        viewBox="0 0 13.414 8.829"
-                      >
-                        <g transform="translate(1 1.414)">
-                          <path
-                            d="M12,12,9,9l3-3"
-                            transform="translate(-1 -6)"
-                            style={{
-                              fill: "none",
-                              stroke: "rgb(253, 65, 0)",
-                              strokeLinecap: "round",
-                              strokeWidth: "2px",
-                              strokeLinejoin: "round",
-                            }}
-                          ></path>
+                    {data.length == 0 ? (
+                      <></>
+                    ) : (
+                      <div className="flex justify-center items-center bg-white rounded-[5px] justify-">
+                        <div className="mr-[20px]">
+                          {" "}
+                          {/* pirvelze dasabrunebeli gilaki*/}
+                          <button
+                            disabled={currentPage === 1}
+                            onClick={handleFirstPage}
+                            className={` ${currentPage === 1 ? "hidden" : ""}`}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="13.414"
+                              height="8.829"
+                              viewBox="0 0 13.414 8.829"
+                            >
+                              <g transform="translate(1 1.414)">
+                                <path
+                                  d="M12,12,9,9l3-3"
+                                  transform="translate(-1 -6)"
+                                  style={{
+                                    fill: "none",
+                                    stroke: "rgb(253, 65, 0)",
+                                    strokeLinecap: "round",
+                                    strokeWidth: "2px",
+                                    strokeLinejoin: "round",
+                                  }}
+                                ></path>
 
-                          <path
-                            d="M12,12,9,9l3-3"
-                            transform="translate(-6 -6)"
-                            style={{
-                              fill: "none",
-                              stroke: "rgb(253, 65, 0)",
-                              strokeLinecap: "round",
-                              strokeWidth: "2px",
-                              strokeLinejoin: "round",
-                            }}
-                          ></path>
+                                <path
+                                  d="M12,12,9,9l3-3"
+                                  transform="translate(-6 -6)"
+                                  style={{
+                                    fill: "none",
+                                    stroke: "rgb(253, 65, 0)",
+                                    strokeLinecap: "round",
+                                    strokeWidth: "2px",
+                                    strokeLinejoin: "round",
+                                  }}
+                                ></path>
 
-                          <line
-                            y2="6"
-                            transform="translate(0)"
-                            style={{
-                              fill: "none",
-                              stroke: "rgb(253, 65, 0)",
-                              strokeLinecap: "round",
-                              strokeWidth: "2px",
-                            }}
-                          ></line>
-                        </g>
-                      </svg>
-                    </button>
-                  </div>
+                                <line
+                                  y2="6"
+                                  transform="translate(0)"
+                                  style={{
+                                    fill: "none",
+                                    stroke: "rgb(253, 65, 0)",
+                                    strokeLinecap: "round",
+                                    strokeWidth: "2px",
+                                  }}
+                                ></line>
+                              </g>
+                            </svg>
+                          </button>
+                        </div>
 
-                  <div className="mr-[20px]">
-                    {" "}
-                    {/* previous gilaki*/}
-                    <button
-                      disabled={currentPage === 1}
-                      onClick={handlePrevPage}
-                      className={` ${currentPage === 1 ? "hidden" : ""}`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="5.414"
-                        height="8.829"
-                        viewBox="0 0 5.414 8.829"
-                      >
-                        <path
-                          d="M12,12,9,9l3-3"
-                          transform="translate(-8 -4.586)"
-                          style={{
-                            fill: "none",
-                            stroke: "rgb(253, 65, 0)",
-                            strokeLinecap: "round",
-                            strokeLinejoin: "round",
-                            strokeWidth: "2px",
-                          }}
-                        ></path>
-                      </svg>
-                    </button>
-                  </div>
+                        <div className="mr-[20px]">
+                          {" "}
+                          {/* previous gilaki*/}
+                          <button
+                            disabled={currentPage === 1}
+                            onClick={handlePrevPage}
+                            className={` ${currentPage === 1 ? "hidden" : ""}`}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="5.414"
+                              height="8.829"
+                              viewBox="0 0 5.414 8.829"
+                            >
+                              <path
+                                d="M12,12,9,9l3-3"
+                                transform="translate(-8 -4.586)"
+                                style={{
+                                  fill: "none",
+                                  stroke: "rgb(253, 65, 0)",
+                                  strokeLinecap: "round",
+                                  strokeLinejoin: "round",
+                                  strokeWidth: "2px",
+                                }}
+                              ></path>
+                            </svg>
+                          </button>
+                        </div>
 
-                  {renderPageButtons()}
+                        {renderPageButtons()}
 
-                  <div className="mr-[20px]">
-                    {" "}
-                    {/* next gilaki*/}
-                    <button
-                      disabled={currentPage === maxPages}
-                      onClick={handleNextPage}
-                      className={` ${currentPage === maxPages ? "hidden" : ""}`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="5.414"
-                        height="8.829"
-                        viewBox="0 0 5.414 8.829"
-                      >
-                        <path
-                          d="M9,12l3-3L9,6"
-                          transform="translate(-7.586 -4.586)"
-                          style={{
-                            fill: "none",
-                            stroke: "rgb(253, 65, 0)",
-                            strokeLinecap: "round",
-                            strokeLinejoin: "round",
-                            strokeWidth: "2px",
-                          }}
-                        ></path>
-                      </svg>
-                    </button>
-                  </div>
+                        <div className="mr-[20px]">
+                          {" "}
+                          {/* next gilaki*/}
+                          <button
+                            disabled={currentPage === maxPages}
+                            onClick={handleNextPage}
+                            className={` ${
+                              currentPage === maxPages ? "hidden" : ""
+                            }`}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="5.414"
+                              height="8.829"
+                              viewBox="0 0 5.414 8.829"
+                            >
+                              <path
+                                d="M9,12l3-3L9,6"
+                                transform="translate(-7.586 -4.586)"
+                                style={{
+                                  fill: "none",
+                                  stroke: "rgb(253, 65, 0)",
+                                  strokeLinecap: "round",
+                                  strokeLinejoin: "round",
+                                  strokeWidth: "2px",
+                                }}
+                              ></path>
+                            </svg>
+                          </button>
+                        </div>
 
-                  <div className="mr-[20px]">
-                    {" "}
-                    {/* boloshi gadasasvleli gilaki*/}
-                    <button
-                      disabled={currentPage === maxPages}
-                      onClick={handleLastPage}
-                      className={` ${currentPage === maxPages ? "hidden" : ""}`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="13.414"
-                        height="8.829"
-                        viewBox="0 0 13.414 8.829"
-                      >
-                        <g transform="translate(-1134.586 -2682.586)">
-                          <path
-                            d="M9,12l3-3L9,6"
-                            transform="translate(1127 2678)"
-                            style={{
-                              fill: "none",
-                              stroke: "rgb(253, 65, 0)",
-                              strokeLinecap: "round",
-                              strokeWidth: "2px",
-                              strokeLinejoin: "round",
-                            }}
-                          ></path>
+                        <div className="mr-[20px]">
+                          {" "}
+                          {/* boloshi gadasasvleli gilaki*/}
+                          <button
+                            disabled={currentPage === maxPages}
+                            onClick={handleLastPage}
+                            className={` ${
+                              currentPage === maxPages ? "hidden" : ""
+                            }`}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="13.414"
+                              height="8.829"
+                              viewBox="0 0 13.414 8.829"
+                            >
+                              <g transform="translate(-1134.586 -2682.586)">
+                                <path
+                                  d="M9,12l3-3L9,6"
+                                  transform="translate(1127 2678)"
+                                  style={{
+                                    fill: "none",
+                                    stroke: "rgb(253, 65, 0)",
+                                    strokeLinecap: "round",
+                                    strokeWidth: "2px",
+                                    strokeLinejoin: "round",
+                                  }}
+                                ></path>
 
-                          <path
-                            d="M9,12l3-3L9,6"
-                            transform="translate(1132 2678)"
-                            style={{
-                              fill: "none",
-                              stroke: "rgb(253, 65, 0)",
-                              strokeLinecap: "round",
-                              strokeWidth: "2px",
-                              strokeLinejoin: "round",
-                            }}
-                          ></path>
+                                <path
+                                  d="M9,12l3-3L9,6"
+                                  transform="translate(1132 2678)"
+                                  style={{
+                                    fill: "none",
+                                    stroke: "rgb(253, 65, 0)",
+                                    strokeLinecap: "round",
+                                    strokeWidth: "2px",
+                                    strokeLinejoin: "round",
+                                  }}
+                                ></path>
 
-                          <line
-                            y2="6"
-                            transform="translate(1147 2684)"
-                            style={{
-                              fill: "none",
-                              stroke: "rgb(253, 65, 0)",
-                              strokeLinecap: "round",
-                              strokeWidth: "2px",
-                            }}
-                          ></line>
-                        </g>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-
-              
+                                <line
+                                  y2="6"
+                                  transform="translate(1147 2684)"
+                                  style={{
+                                    fill: "none",
+                                    stroke: "rgb(253, 65, 0)",
+                                    strokeLinecap: "round",
+                                    strokeWidth: "2px",
+                                  }}
+                                ></line>
+                              </g>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </>
                 )}
               </div>
               {/* marcxena mxare */}
-              
-              
-              
             </div>
           </div>
         </div>
@@ -1560,7 +1547,6 @@ function App() {
                     <button
                       onClick={() => {
                         setIsDollar(false);
-                        console.log(isDollar);
                       }}
                     >
                       <div className={buttonClasses2}>
@@ -1582,7 +1568,6 @@ function App() {
                     <button
                       onClick={() => {
                         setIsDollar(true);
-                        console.log(isDollar);
                       }}
                     >
                       <div className={buttonClasses}>

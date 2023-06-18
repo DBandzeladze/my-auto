@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Context, Context4 } from "../global";
+import { Context4 } from "../global";
 import {
   GlobalType,
   ManufacturerListType,
   ModelListType,
 } from "../types/types";
-import ManufacturerLst from "./manufacturerLst";
 
 interface Option {
   model_name: string;
@@ -86,14 +85,14 @@ const ModelDropDown: React.FC<{
     );
   }, [state, options, models]);
 
-  const clearFilter = ()=>{
+  const clearFilter = () => {
     let newState = state;
-    for (const key in newState){
-      newState[key] = 0
+    for (const key in newState) {
+      newState[key] = 0;
     }
     setState(newState);
     setSelectedOptions([]);
-  }
+  };
 
   const handleToggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -119,13 +118,11 @@ const ModelDropDown: React.FC<{
       let newState = state;
       newState[`${option.man_id}.${option.model_id}`] = 0;
       setState(newState);
-      console.log(state);
     } else {
       setSelectedOptions([...selectedOptions, option]);
       let newState = state;
       newState[`${option.man_id}.${option.model_id}`] = 1;
       setState(newState);
-      console.log(state);
     }
   };
 
@@ -165,9 +162,7 @@ const ModelDropDown: React.FC<{
             if (array.includes(parseInt(element.man_id, 10)))
               return (
                 <div>
-                  <div className="px-4 py-2">
-                  {element.man_name}
-                  </div>
+                  <div className="px-4 py-2">{element.man_name}</div>
                   {filteredOptions
                     .filter((opt) => opt.man_id.toString() == element.man_id)
                     .map((option) => (
@@ -194,27 +189,27 @@ const ModelDropDown: React.FC<{
           <div>
             {selectedOptions.length !== 0 && (
               <div className="flex flex-row items-center justify-center">
-              <div>
-                <hr></hr>
-                <button
-                  title="clean the filter"
-                  onClick={() => clearFilter()}
-                  className="h-[50px] bg-white text-gray-400 text-[12px] py-2 px-4 rounded-md hover:text-black"
-                >
-                  ფილტრის გასუფთავება
-                </button>
+                <div>
+                  <hr></hr>
+                  <button
+                    title="clean the filter"
+                    onClick={() => clearFilter()}
+                    className="h-[50px] bg-white text-gray-400 text-[12px] py-2 px-4 rounded-md hover:text-black"
+                  >
+                    ფილტრის გასუფთავება
+                  </button>
+                </div>
+                <div>
+                  <hr></hr>
+                  <button
+                    title="choose"
+                    onClick={() => setIsOpen(false)}
+                    className="h-[30px] mt-[5px] mb-[15px] mr-[15px] bg-custom text-white text-[12px] py-2 px-4 rounded-[6px]"
+                  >
+                    არჩევა
+                  </button>
+                </div>
               </div>
-              <div>
-                <hr></hr>
-                <button
-                  title="choose"
-                  onClick={() => setIsOpen(false)}
-                  className="h-[30px] mt-[5px] mb-[15px] mr-[15px] bg-custom text-white text-[12px] py-2 px-4 rounded-[6px]"
-                >
-                  არჩევა
-                </button>
-              </div>
-            </div>
             )}
           </div>
         </div>

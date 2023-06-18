@@ -76,13 +76,11 @@ const CategoryDropDown: React.FC<{ categories: CategoryType[] }> = ({
       let newState = state;
       newState[parseInt(option.category_id, 10)] = 0;
       setState(newState);
-      console.log(state);
     } else {
       setSelectedOptions([...selectedOptions, option]);
       let newState = state;
       newState[parseInt(option.category_id, 10)] = 1;
       setState(newState);
-      console.log(state);
     }
   };
 

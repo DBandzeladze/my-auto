@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Context2 } from '../global';
+import React, { useEffect, useState } from "react";
 import { GlobalType, ManufacturerListType } from "../types/types";
 
 interface Option {
@@ -7,30 +6,40 @@ interface Option {
   man_id: string;
 }
 
-
-const ManDropDown: React.FC<{ manufacturer: ManufacturerListType[] }> = ({ manufacturer }) => {
-  const [manufacturerPotential, setManufacturerPotential] = useState<GlobalType>({});
+const ManDropDown: React.FC<{ manufacturer: ManufacturerListType[] }> = ({
+  manufacturer,
+}) => {
+  const [manufacturerPotential, setManufacturerPotential] =
+    useState<GlobalType>({});
   const [manufacturerChanged, setManufacturerChanged] = useState(0);
-  const [toDownload, setToDownload] = useState("")
+  const [toDownload, setToDownload] = useState("");
   const [downloaded, setDownloaded] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
-  const [options, setOptions] = useState<Option[]>(manufacturer.map(({man_name, man_id})=>({man_name, man_id})));
+  const [options, setOptions] = useState<Option[]>(
+    manufacturer.map(({ man_name, man_id }) => ({ man_name, man_id }))
+  );
 
-  useEffect(()=>{
+  useEffect(() => {
     setIsOpen(false);
     setSearchTerm("");
-    setOptions(manufacturer.map(({man_name, man_id})=>({man_name, man_id})));
-  }, [manufacturer])
+    setOptions(
+      manufacturer.map(({ man_name, man_id }) => ({ man_name, man_id }))
+    );
+  }, [manufacturer]);
 
-  useEffect(()=>{
-    setSelectedOptions(manufacturer.filter((opt)=>(manufacturerPotential[opt.man_id] === 1)).map(({man_name, man_id})=>({man_name, man_id})));
+  useEffect(() => {
+    setSelectedOptions(
+      manufacturer
+        .filter((opt) => manufacturerPotential[opt.man_id] === 1)
+        .map(({ man_name, man_id }) => ({ man_name, man_id }))
+    );
   }, [manufacturerPotential, options, manufacturer]);
 
   const handleToggleDropdown = () => {
     setIsOpen(!isOpen);
-    setSearchTerm(''); // Reset search term when opening/closing the dropdown
+    setSearchTerm(""); // Reset search term when opening/closing the dropdown
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,17 +49,20 @@ const ManDropDown: React.FC<{ manufacturer: ManufacturerListType[] }> = ({ manuf
   };
 
   const handleCheckboxChange = (option: Option) => {
-    const isSelected = selectedOptions.find((selected) => selected.man_id === option.man_id);
+    const isSelected = selectedOptions.find(
+      (selected) => selected.man_id === option.man_id
+    );
 
     if (isSelected) {
-      const updatedOptions = selectedOptions.filter((selected) => selected.man_id !== option.man_id);
+      const updatedOptions = selectedOptions.filter(
+        (selected) => selected.man_id !== option.man_id
+      );
       setSelectedOptions(updatedOptions);
       let newState = manufacturerPotential;
       newState[option.man_id] = 0;
       setManufacturerPotential(newState);
       setToDownload(option.man_id);
       setManufacturerChanged(manufacturerChanged + 1);
-      console.log(manufacturerPotential);
     } else {
       setSelectedOptions([...selectedOptions, option]);
       let newState = manufacturerPotential;
@@ -58,25 +70,27 @@ const ManDropDown: React.FC<{ manufacturer: ManufacturerListType[] }> = ({ manuf
       setManufacturerPotential(newState);
       setToDownload(option.man_id);
       setManufacturerChanged(manufacturerChanged + 1);
-      console.log(manufacturerPotential);
     }
   };
 
   const getSelectedLabels = () => {
-    return selectedOptions.map((option) => option.man_name).join(',');
+    return selectedOptions.map((option) => option.man_name).join(",");
   };
 
   const filteredOptions = options.filter((option) =>
     option.man_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const placeholderText = selectedOptions.length > 0 ? getSelectedLabels() : 'მწარმოებელი';
+  const placeholderText =
+    selectedOptions.length > 0 ? getSelectedLabels() : "მწარმოებელი";
 
   return (
     <div className="relative">
       <input
         type="text"
-        className={`search-bar ${isOpen ? 'active' : ''} border rounded-md px-3 py-2 outline-none w-full`}
+        className={`search-bar ${
+          isOpen ? "active" : ""
+        } border rounded-md px-3 py-2 outline-none w-full`}
         placeholder={placeholderText}
         onClick={handleToggleDropdown}
         value={searchTerm}
