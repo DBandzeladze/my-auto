@@ -47,3 +47,13 @@ export const Store4: React.FC = () => {
   return <Context4.Provider value={[state, setState]}></Context4.Provider>;
 };
 
+export const Context5 = React.createContext<[boolean, React.Dispatch<React.SetStateAction<boolean>>]>([false, () => {}]);
+
+export const Store5: React.FC = () => {
+  const [state, setState] = useState(false);
+
+  return <Context5.Provider value={[state, setState]}></Context5.Provider>;
+};
+
+
+

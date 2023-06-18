@@ -146,7 +146,7 @@ const ModelDropDown: React.FC<{
         type="text"
         className={`search-bar ${
           isOpen ? "active" : ""
-        } border rounded-md px-3 py-2 outline-none w-full`}
+        } w-[198px] text-start hover:border-gray-500 bg-white border py-2 px-4 rounded`}
         placeholder={placeholderText}
         onClick={handleToggleDropdown}
         value={searchTerm}
@@ -154,7 +154,7 @@ const ModelDropDown: React.FC<{
         readOnly={!isOpen}
       />
       {isOpen && (
-        <div className="absolute top-12 left-0 z-10 bg-white border rounded-md shadow-md">
+        <div className=" w-[198px] max-h-[324px] mt-[15px] overflow-y-auto absolute top-12 left-0 z-10 bg-white border rounded-md shadow-md">
           {manufacturer.map((element) => {
             let array: number[] = [];
             filteredOptions.forEach((element1) => {
@@ -180,9 +180,9 @@ const ModelDropDown: React.FC<{
                             }
                             // checked={selectedOptions.includes(option)}
                             onChange={() => handleCheckboxChange(option)}
-                            className="form-checkbox"
+                            className="rounded-[4px] w-[16px] h-[16px] accent-custom"
                           />
-                          <span className="text-gray-800">
+                          <span className="text-gray-500 text-[14px] font-normal ml-[12px]">
                             {option.model_name}
                           </span>
                         </label>
@@ -193,19 +193,28 @@ const ModelDropDown: React.FC<{
           })}
           <div>
             {selectedOptions.length !== 0 && (
+              <div className="flex flex-row items-center justify-center">
               <div>
                 <hr></hr>
                 <button
                   title="clean the filter"
-                  onClick={()=>clearFilter()}
-                  className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                  onClick={() => clearFilter()}
+                  className="h-[50px] bg-white text-gray-400 text-[12px] py-2 px-4 rounded-md hover:text-black"
                 >
-                  Clear Filter
+                  ფილტრის გასუფთავება
                 </button>
-                <button title="choose"
-                 onClick={()=>setIsOpen(false)}
-                  className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">choose</button>
               </div>
+              <div>
+                <hr></hr>
+                <button
+                  title="choose"
+                  onClick={() => setIsOpen(false)}
+                  className="h-[30px] mt-[5px] mb-[15px] mr-[15px] bg-custom text-white text-[12px] py-2 px-4 rounded-[6px]"
+                >
+                  არჩევა
+                </button>
+              </div>
+            </div>
             )}
           </div>
         </div>
